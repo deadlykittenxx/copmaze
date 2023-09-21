@@ -1,14 +1,21 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class CopMaze extends Application {
@@ -16,10 +23,21 @@ public class CopMaze extends Application {
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
 	
+	private static final int MAZE_WIDTH = 400;
+    private static final int MAZE_HEIGHT = 400;
+    private static final int GRID_SIZE = 20;
+    
+    private int numRows;
+    private int numCols;
+    private Cell[][] grid;
+    
+    
 	public Scene characterScene;
 	public Scene levelScene;
+	public Scene mazeScene;
 	public EventHandler<ActionEvent> btnStartListener;
 	public EventHandler<ActionEvent> btnCharacterListener;
+	public EventHandler<ActionEvent> btnLevelListener;
 	
 	public static void main(String[] args){
 		launch(args);
@@ -41,12 +59,16 @@ public class CopMaze extends Application {
 		levelScene = new Scene(levelRoot);
 		levelRoot.setAlignment(Pos.CENTER);
 		
+		VBox mazeRoot = new VBox();
+		mazeScene = new Scene(mazeRoot);
+		
 		initListener(primaryStage);
 		
 		
 		initGUI(root);
 		characterGUI(characterRoot);
 		levelGUI(levelRoot);
+		mazeGUI(mazeRoot);
 		
 		primaryStage.setTitle("Cop Maze"); 
 		primaryStage.setWidth(WIDTH);
@@ -60,6 +82,13 @@ public class CopMaze extends Application {
 	 * 	Initialize the listeners
 	 */
 	public void initListener(Stage stage) {
+		btnLevelListener = new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				stage.setScene(mazeScene);
+			}
+		};
+		
 		btnStartListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
@@ -84,6 +113,28 @@ public class CopMaze extends Application {
 		
 	}
 	
+	public void mazeGUI(VBox root) {
+		numRows = MAZE_HEIGHT / GRID_SIZE;
+        numCols = MAZE_WIDTH / GRID_SIZE;
+        
+        grid = new Cell[numRows][numCols];
+
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                grid[i][j] = new Cell(i, j);
+            }
+        }
+        
+        generateMaze();
+
+        Canvas canvas = new Canvas(MAZE_WIDTH, MAZE_HEIGHT);
+        drawMaze(canvas.getGraphicsContext2D());
+
+        
+        root.getChildren().add(canvas);
+        
+	}
+	
 	public void levelGUI(VBox root) {
 		Label label = new Label("Choose Your Level !"); 
 		label.setPadding(new Insets(20, 50, 50, 50));
@@ -94,6 +145,9 @@ public class CopMaze extends Application {
 		
 		root.getChildren().addAll(label, btnEasy, btnHard, btnSuperHard);
 		
+		btnEasy.setOnAction(btnLevelListener);
+		btnHard.setOnAction(btnLevelListener);
+		btnSuperHard.setOnAction(btnLevelListener);
 	}
 	
 	
@@ -133,6 +187,72 @@ public class CopMaze extends Application {
 		root.getChildren().addAll(label, btnHowtoPlay, btnStart);
 		
 	}
+	
+	
+    private void generateMaze() {
+        Stack<Cell> stack = new Stack<>();
+        Cell current = grid[0][0];
+        current.visited = true;
+
+        while (true) {
+            List<Cell> neighbors = getUnvisitedNeighbors(current);
+            if (!neighbors.isEmpty()) {
+                Cell neighbor = neighbors.get((int) (Math.random() * neighbors.size()));
+                removeWall(current, neighbor);
+                stack.push(current);
+                current = neighbor;
+                current.visited = true;
+            } else if (!stack.isEmpty()) {
+                current = stack.pop();
+            } else {
+                break;
+            }
+        }
+    }
+    
+    private List<Cell> getUnvisitedNeighbors(Cell cell) {
+        int row = cell.row;
+        int col = cell.col;
+        List<Cell> neighbors = new ArrayList<>();
+
+        if (row > 1 && !grid[row - 2][col].visited) {
+            neighbors.add(grid[row - 2][col]);
+        }
+        if (row < numRows - 2 && !grid[row + 2][col].visited) {
+            neighbors.add(grid[row + 2][col]);
+        }
+        if (col > 1 && !grid[row][col - 2].visited) {
+            neighbors.add(grid[row][col - 2]);
+        }
+        if (col < numCols - 2 && !grid[row][col + 2].visited) {
+            neighbors.add(grid[row][col + 2]);
+        }
+
+        Collections.shuffle(neighbors);
+        return neighbors;
+    }
+
+    private void removeWall(Cell current, Cell neighbor) {
+        int rowDiff = neighbor.row - current.row;
+        int colDiff = neighbor.col - current.col;
+        int wallRow = current.row + rowDiff / 2;
+        int wallCol = current.col + colDiff / 2;
+        grid[wallRow][wallCol].visited = true;
+    }
+    
+    private void drawMaze(GraphicsContext gc) {
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, MAZE_WIDTH, MAZE_HEIGHT);
+        gc.setFill(Color.WHITE);
+
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                if (!grid[row][col].visited) {
+                    gc.fillRect(col * GRID_SIZE, row * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+                }
+            }
+        }
+    }
 	
 	
 }
