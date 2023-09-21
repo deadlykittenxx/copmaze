@@ -131,8 +131,11 @@ public class CopMaze extends Application {
 		btnNextListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				count++;
-				Ruletxt.setText(RuleContent[count]);
+				if(count < 4) {
+					count++;
+					Ruletxt.setText(RuleContent[count]);
+				} else return;
+				
 			}
 		};
 		
