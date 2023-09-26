@@ -134,7 +134,7 @@ public class CopMaze extends Application {
 				if(count < 4) {
 					count++;
 					Ruletxt.setText(RuleContent[count]);
-				}
+				} else return;
 				
 			}
 		};
