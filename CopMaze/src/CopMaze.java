@@ -290,7 +290,7 @@ public class CopMaze extends Application {
 		rectangle.setArcHeight(30);
 		rectangle.setArcWidth(30);
 		rectangle.setStroke(Color.TRANSPARENT);
-		rectangle.setStyle("-fx-fill: red; -fx-opacity: 0.5;");
+		rectangle.setStyle("-fx-fill: white; -fx-opacity: 0.5;");
 		
 		RuleContent[0] = "1. Move around the maze and collect all the gems.";
 		RuleContent[1] = "2. You should avoid policmen while moving around.";
