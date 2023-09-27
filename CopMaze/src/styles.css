@@ -1,9 +1,7 @@
+
+
 .button
 {
-    -fx-background-color: #7895CB;
-    -fx-background-radius: 6.0,5.0;
-    -fx-background-insets: 0.0,1.0;
-
     -fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,0.4), 5.0, 0.0, 0.0, 1.0);
    -fx-text-fill: white;
 }
@@ -20,23 +18,31 @@
 }
 
 .text {
-    -fx-font-family: "Roboto";
 }
 
 #btn {
-	-fx-font-size: 20;
+	-fx-background-color: transparent;
+	-fx-background-image: url(/resources/image/buttonGray.png);
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: stretch;
+	-fx-font-size: 15;
+	-fx-font-family: 'Quicksand';
 }
 
 #btn2 {
 	-fx-font-size: 15;
 }
 
-#title {
-	-fx-font-size: 40;
+#mainTitle {
+	-fx-font-size: 50;
+	-fx-font-family: 'Citylines';
+	-fx-text-fill: black;
 }
 
-#title2 {
+#subTitle {
 	-fx-font-size: 30;
+	
 }
 
 #ruleBox {
@@ -47,4 +53,19 @@
 
 #Ruletxt {
 	-fx-font-size: 15;
+}
+
+#initScene{
+	-fx-background-image: url(/resources/image/main.jpg);
+	-fx-background-repeat: no-repeat;
+	-fx-background-position: center;
+	-fx-background-size: cover;
+}
+
+@font-face {
+    src: url(/resources/font/Citylines.otf);
+}
+
+@font-face {
+    src: url(/resources/font/Quicksand.ttf);
 }

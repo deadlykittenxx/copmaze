@@ -18,6 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -169,7 +170,7 @@ public class CopMaze extends Application {
 
 	public void levelGUI(VBox root) {
 		Label label = new Label("Choose Your Level !");
-		label.setId("title2");
+		label.setId("subTitle");
 		label.setPadding(new Insets(20, 50, 50, 50));
 
 		Button btnEasy = new Button("Easy");
@@ -193,7 +194,7 @@ public class CopMaze extends Application {
 
 	public void characterGUI(VBox root) {
 		Label label = new Label("Choose Your Character !");
-		label.setId("title2");
+		label.setId("subTitle");
 		label.setPadding(new Insets(20, 50, 50, 50));
 
 		Button btnJhonny = new Button("Johnny");
@@ -211,16 +212,18 @@ public class CopMaze extends Application {
 	 * Initalize the first Scene
 	 */
 	public void initGUI(Pane root) {
+		root.setId("initScene");
+		
 		Label label = new Label("Cop Maze");
-		label.setId("title");
-		label.setPadding(new Insets(20, 50, 50, 50));
+		label.setId("mainTitle");
+		label.setPadding(new Insets(0, 50, 70, 50));
 
 		Button btnHowtoPlay = new Button("How to Play");
-		btnHowtoPlay.setPrefSize(140, 50);
+		btnHowtoPlay.setPrefSize(120, 30);
 		btnHowtoPlay.setId("btn");
 
 		Button btnStart = new Button("Start");
-		btnStart.setPrefSize(100, 50);
+		btnStart.setPrefSize(120, 30);
 		btnStart.setId("btn");
 
 		btnHowtoPlay.setOnAction(btnHowtoPlayListener);
@@ -299,7 +302,7 @@ public class CopMaze extends Application {
 		
 		root.setPadding(new Insets(15));
 		Label label = new Label("How to play!");
-		label.setId("title2");
+		label.setId("subTitle");
 		label.setPadding(new Insets(20, 10, 20, 10));
 
 		Rectangle rectangle = new Rectangle(430, 300);
