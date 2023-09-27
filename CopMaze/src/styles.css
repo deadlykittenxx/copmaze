@@ -1,0 +1,50 @@
+.button
+{
+    -fx-background-color: #7895CB;
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,0.4), 5.0, 0.0, 0.0, 1.0);
+   -fx-text-fill: white;
+}
+
+.button:hover
+{
+    -fx-background-color:#4A55A2;
+    -fx-background-radius: 6.0,5.0;
+    -fx-background-insets: 0.0,1.0;
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,0.4), 5.0, 0.0, 0.0, 1.0);
+   -fx-text-fill: white;
+
+}
+
+.text {
+    -fx-font-family: "Roboto";
+}
+
+#btn {
+	-fx-font-size: 20;
+}
+
+#btn2 {
+	-fx-font-size: 15;
+}
+
+#title {
+	-fx-font-size: 40;
+}
+
+#title2 {
+	-fx-font-size: 30;
+}
+
+#ruleBox {
+	-fx-fill: #C5DFF8;
+	-fx-opacity: 0.5;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,0.2), 3.0, 0.0, 0.0, 0.7);
+}
+
+#Ruletxt {
+	-fx-font-size: 15;
+}

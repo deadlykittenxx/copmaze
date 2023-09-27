@@ -22,19 +22,18 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class CopMaze extends Application {
-	
+
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
-	
+
 	private static final int MAZE_WIDTH = 400;
-    private static final int MAZE_HEIGHT = 400;
-    private static final int GRID_SIZE = 20;
-    
-    private int numRows;
-    private int numCols;
-    private Cell[][] grid;
-    
-    
+	private static final int MAZE_HEIGHT = 400;
+	private static final int GRID_SIZE = 20;
+
+	private int numRows;
+	private int numCols;
+	private Cell[][] grid;
+
 	public Scene characterScene;
 	public Scene levelScene;
 	public Scene mazeScene;
@@ -47,52 +46,57 @@ public class CopMaze extends Application {
 	public Text Ruletxt;
 	public String[] RuleContent = new String[5];
 	public int count = 0;
-	
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
-	
-		VBox root = new VBox();
+
+		VBox root = new VBox(15);
 		Scene scene = new Scene(root);
 		root.setAlignment(Pos.CENTER);
-		
-		VBox characterRoot = new VBox();
+
+		VBox characterRoot = new VBox(15);
 		characterScene = new Scene(characterRoot);
 		characterRoot.setAlignment(Pos.CENTER);
-		
-		VBox levelRoot = new VBox();
+
+		VBox levelRoot = new VBox(15);
 		levelScene = new Scene(levelRoot);
 		levelRoot.setAlignment(Pos.CENTER);
-		
+
 		VBox mazeRoot = new VBox();
 		mazeScene = new Scene(mazeRoot);
-		
+
 		VBox ruleRoot = new VBox();
 		ruleScene = new Scene(ruleRoot);
 		ruleRoot.setAlignment(Pos.CENTER);
-		
+
 		initListener(primaryStage);
-		
+
 		initGUI(root);
 		characterGUI(characterRoot);
 		levelGUI(levelRoot);
 		mazeGUI(mazeRoot);
 		ruleGUI(ruleRoot);
-		
-		primaryStage.setTitle("Cop Maze"); 
+
+		String css = this.getClass().getResource("styles.css").toExternalForm();
+		scene.getStylesheets().add(css);
+		characterScene.getStylesheets().add(css);
+		levelScene.getStylesheets().add(css);
+		mazeScene.getStylesheets().add(css);
+		ruleScene.getStylesheets().add(css);
+
+		primaryStage.setTitle("Cop Maze");
 		primaryStage.setWidth(WIDTH);
 		primaryStage.setHeight(HEIGHT);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
-	
-	
+
 	/*
-	 * 	Initialize the listeners
+	 * Initialize the listeners
 	 */
 	public void initListener(Stage stage) {
 		btnLevelListener = new EventHandler<ActionEvent>() {
@@ -101,218 +105,271 @@ public class CopMaze extends Application {
 				stage.setScene(mazeScene);
 			}
 		};
-		
+
 		btnStartListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
 				stage.setScene(characterScene);
 			}
 		};
-		
+
 		btnCharacterListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				/*
-				 * 	Create new Character
+				 * Create new Character
 				 */
 				Button btn = (Button) event.getSource();
 				Character player = new Character(btn.getText());
 				stage.setScene(levelScene);
 			}
 		};
-		
+
 		btnHowtoPlayListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				stage.setScene(ruleScene);
 			}
 		};
-		
+
 		btnNextListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				count++;
+
 				Ruletxt.setText(RuleContent[count]);
-				if(count < 4) {
+				if (count < 4) {
 					count++;
 					Ruletxt.setText(RuleContent[count]);
-				} 
+				}
 			}
 		};
-		
+
 	}
-	
+
 	public void mazeGUI(VBox root) {
 		numRows = MAZE_HEIGHT / GRID_SIZE;
-        numCols = MAZE_WIDTH / GRID_SIZE;
-        
-        grid = new Cell[numRows][numCols];
+		numCols = MAZE_WIDTH / GRID_SIZE;
 
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-                grid[i][j] = new Cell(i, j);
-            }
-        }
-        
-        generateMaze();
+		grid = new Cell[numRows][numCols];
 
-        Canvas canvas = new Canvas(MAZE_WIDTH, MAZE_HEIGHT);
-        drawMaze(canvas.getGraphicsContext2D());
+		for (int i = 0; i < numRows; i++) {
+			for (int j = 0; j < numCols; j++) {
+				grid[i][j] = new Cell(i, j);
+			}
+		}
 
-        
-        root.getChildren().add(canvas);
-        
+		generateMaze();
+
+		Canvas canvas = new Canvas(MAZE_WIDTH, MAZE_HEIGHT);
+		drawMaze(canvas.getGraphicsContext2D());
+
+		root.getChildren().add(canvas);
+
 	}
-	
+
 	public void levelGUI(VBox root) {
-		Label label = new Label("Choose Your Level !"); 
+		Label label = new Label("Choose Your Level !");
+		label.setId("title2");
 		label.setPadding(new Insets(20, 50, 50, 50));
-		
+
 		Button btnEasy = new Button("Easy");
 		Button btnHard = new Button("Hard");
 		Button btnSuperHard = new Button("Super Hard");
 		
+		btnEasy.setId("btn");
+		btnHard.setId("btn");
+		btnSuperHard.setId("btn");
+
 		root.getChildren().addAll(label, btnEasy, btnHard, btnSuperHard);
-		
+
 		btnEasy.setOnAction(btnLevelListener);
 		btnHard.setOnAction(btnLevelListener);
 		btnSuperHard.setOnAction(btnLevelListener);
 	}
-	
-	
+
 	/*
-	 * 	Choose Character
+	 * Choose Character
 	 */
-	
+
 	public void characterGUI(VBox root) {
-		Label label = new Label("Choose Your Character !"); 
+		Label label = new Label("Choose Your Character !");
+		label.setId("title2");
 		label.setPadding(new Insets(20, 50, 50, 50));
-		
+
 		Button btnJhonny = new Button("Johnny");
 		Button btnSarah = new Button("Sarah");
-		
+		btnJhonny.setId("btn");
+		btnSarah.setId("btn");
+
 		root.getChildren().addAll(label, btnJhonny, btnSarah);
-		
+
 		btnJhonny.setOnAction(btnCharacterListener);
 		btnSarah.setOnAction(btnCharacterListener);
 	}
-	
-	
-	
+
 	/*
-	 * 	Initalize the first Scene
+	 * Initalize the first Scene
 	 */
 	public void initGUI(Pane root) {
 		Label label = new Label("Cop Maze");
+		label.setId("title");
 		label.setPadding(new Insets(20, 50, 50, 50));
-		
+
 		Button btnHowtoPlay = new Button("How to Play");
+		btnHowtoPlay.setPrefSize(140, 50);
+		btnHowtoPlay.setId("btn");
+
 		Button btnStart = new Button("Start");
-		
+		btnStart.setPrefSize(100, 50);
+		btnStart.setId("btn");
+
 		btnHowtoPlay.setOnAction(btnHowtoPlayListener);
 		btnStart.setOnAction(btnStartListener);
-		
+
 		root.getChildren().addAll(label, btnHowtoPlay, btnStart);
-		
+
 	}
-	
-	
-    private void generateMaze() {
-        Stack<Cell> stack = new Stack<>();
-        Cell current = grid[0][0];
-        current.visited = true;
 
-        while (true) {
-            List<Cell> neighbors = getUnvisitedNeighbors(current);
-            if (!neighbors.isEmpty()) {
-                Cell neighbor = neighbors.get((int) (Math.random() * neighbors.size()));
-                removeWall(current, neighbor);
-                stack.push(current);
-                current = neighbor;
-                current.visited = true;
-            } else if (!stack.isEmpty()) {
-                current = stack.pop();
-            } else {
-                break;
-            }
-        }
-    }
-    
-    private List<Cell> getUnvisitedNeighbors(Cell cell) {
-        int row = cell.row;
-        int col = cell.col;
-        List<Cell> neighbors = new ArrayList<>();
+	private void generateMaze() {
+		Stack<Cell> stack = new Stack<>();
+		Cell current = grid[0][0];
+		current.visited = true;
 
-        if (row > 1 && !grid[row - 2][col].visited) {
-            neighbors.add(grid[row - 2][col]);
-        }
-        if (row < numRows - 2 && !grid[row + 2][col].visited) {
-            neighbors.add(grid[row + 2][col]);
-        }
-        if (col > 1 && !grid[row][col - 2].visited) {
-            neighbors.add(grid[row][col - 2]);
-        }
-        if (col < numCols - 2 && !grid[row][col + 2].visited) {
-            neighbors.add(grid[row][col + 2]);
-        }
+		while (true) {
+			List<Cell> neighbors = getUnvisitedNeighbors(current);
+			if (!neighbors.isEmpty()) {
+				Cell neighbor = neighbors.get((int) (Math.random() * neighbors.size()));
+				removeWall(current, neighbor);
+				stack.push(current);
+				current = neighbor;
+				current.visited = true;
+			} else if (!stack.isEmpty()) {
+				current = stack.pop();
+			} else {
+				break;
+			}
+		}
+	}
 
-        Collections.shuffle(neighbors);
-        return neighbors;
-    }
+	private List<Cell> getUnvisitedNeighbors(Cell cell) {
+		int row = cell.row;
+		int col = cell.col;
+		List<Cell> neighbors = new ArrayList<>();
 
-    private void removeWall(Cell current, Cell neighbor) {
-        int rowDiff = neighbor.row - current.row;
-        int colDiff = neighbor.col - current.col;
-        int wallRow = current.row + rowDiff / 2;
-        int wallCol = current.col + colDiff / 2;
-        grid[wallRow][wallCol].visited = true;
-    }
-    
-    private void drawMaze(GraphicsContext gc) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, MAZE_WIDTH, MAZE_HEIGHT);
-        gc.setFill(Color.WHITE);
+		if (row > 1 && !grid[row - 2][col].visited) {
+			neighbors.add(grid[row - 2][col]);
+		}
+		if (row < numRows - 2 && !grid[row + 2][col].visited) {
+			neighbors.add(grid[row + 2][col]);
+		}
+		if (col > 1 && !grid[row][col - 2].visited) {
+			neighbors.add(grid[row][col - 2]);
+		}
+		if (col < numCols - 2 && !grid[row][col + 2].visited) {
+			neighbors.add(grid[row][col + 2]);
+		}
 
-        for (int row = 0; row < numRows; row++) {
-            for (int col = 0; col < numCols; col++) {
-                if (!grid[row][col].visited) {
-                    gc.fillRect(col * GRID_SIZE, row * GRID_SIZE, GRID_SIZE, GRID_SIZE);
-                }
-            }
-        }
-    }
+		Collections.shuffle(neighbors);
+		return neighbors;
+	}
 
+	private void removeWall(Cell current, Cell neighbor) {
+		int rowDiff = neighbor.row - current.row;
+		int colDiff = neighbor.col - current.col;
+		int wallRow = current.row + rowDiff / 2;
+		int wallCol = current.col + colDiff / 2;
+		grid[wallRow][wallCol].visited = true;
+	}
 
-	public void ruleGUI (Pane root) {
-		Label label = new Label("How to play!");
-		label.setPadding(new Insets(20, 50, 50, 50));
+	private void drawMaze(GraphicsContext gc) {
+		gc.setFill(Color.BLACK);
+		gc.fillRect(0, 0, MAZE_WIDTH, MAZE_HEIGHT);
+		gc.setFill(Color.WHITE);
+
+		for (int row = 0; row < numRows; row++) {
+			for (int col = 0; col < numCols; col++) {
+				if (!grid[row][col].visited) {
+					gc.fillRect(col * GRID_SIZE, row * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+				}
+			}
+		}
+	}
+
+	public void ruleGUI(Pane root) {
 		
-		Rectangle rectangle = new Rectangle(400, 300);
+		root.setPadding(new Insets(15));
+		Label label = new Label("How to play!");
+		label.setId("title2");
+		label.setPadding(new Insets(20, 10, 20, 10));
+
+		Rectangle rectangle = new Rectangle(430, 300);
+		rectangle.setId("ruleBox");
 		rectangle.setArcHeight(30);
 		rectangle.setArcWidth(30);
 		rectangle.setStroke(Color.TRANSPARENT);
-		rectangle.setStyle("-fx-fill: white; -fx-opacity: 0.5;");
-		
+
 		RuleContent[0] = "1. Move around the maze and collect all the gems.";
 		RuleContent[1] = "2. You should avoid policmen while moving around.";
 		RuleContent[2] = "3. When the key appears, go get it.";
-		RuleContent[3] = "4. Drag the key and drop to the door to unlock it.";
+		RuleContent[3] = "4. Drag the key and drop it to the door to unlock it.";
 		RuleContent[4] = "5. Escape through the opened door.";
-		
+
 		Ruletxt = new Text();
+		Ruletxt.setId("Ruletxt");
 		Ruletxt.setText(RuleContent[0]);
 		
 		StackPane stack = new StackPane();
 		stack.getChildren().addAll(rectangle, Ruletxt);
 		
 		Button btnNext = new Button("Next");
-		btnNext.setAlignment(Pos.CENTER_RIGHT);
-		
+		btnNext.setPrefSize(60, 40);
+		btnNext.setId("btn2");
 		btnNext.setOnAction(btnNextListener);
 		
-		root.getChildren().addAll(label, stack, btnNext);
-		
+		StackPane fullStack = new StackPane();
+		fullStack.setAlignment(Pos.BOTTOM_RIGHT);
+		fullStack.getChildren().addAll(stack, btnNext);
+
+		root.getChildren().addAll(label, fullStack);
+
 	}
-	
-	
+
+	public void controlGUI(Pane root) {
+		Label label = new Label("Game Control");
+		label.setId("controlTitle");
+		label.setPadding(new Insets(20, 50, 20, 50));
+
+		Rectangle rectangle = new Rectangle(400, 300);
+		rectangle.setArcHeight(30);
+		rectangle.setArcWidth(30);
+		rectangle.setStroke(Color.TRANSPARENT);
+		rectangle.setStyle("-fx-fill: white; -fx-opacity: 0.5;");
+
+		RuleContent[0] = "1. Move around the maze and collect all the gems.";
+		RuleContent[1] = "2. You should avoid policmen while moving around.";
+		RuleContent[2] = "3. When the key appears, go get it.";
+		RuleContent[3] = "4. Drag the key and drop it to the door to unlock it.";
+		RuleContent[4] = "5. Escape through the opened door.";
+
+		Ruletxt = new Text();
+		Ruletxt.setText(RuleContent[0]);
+
+		StackPane stack = new StackPane();
+		stack.getChildren().addAll(rectangle, Ruletxt);
+
+		Button btnNext = new Button("Next");
+		btnNext.setAlignment(Pos.CENTER_RIGHT);
+		btnNext.setOnAction(btnNextListener);
+
+		Button btnPlay = new Button("Play Game");
+		btnPlay.setAlignment(Pos.CENTER_RIGHT);
+		// btnNext.setOnAction(btnPlayListener);
+
+		if (count >= 0 && count <= 3) {
+			root.getChildren().addAll(label, stack, btnNext);
+		} else {
+			root.getChildren().addAll(label, stack, btnPlay);
+		}
+	}
+
 }
