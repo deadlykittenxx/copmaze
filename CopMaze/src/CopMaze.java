@@ -39,12 +39,15 @@ public class CopMaze extends Application {
 	public Scene levelScene;
 	public Scene mazeScene;
 	public Scene ruleScene;
+	public Scene controlScene;
 	public EventHandler<ActionEvent> btnStartListener;
 	public EventHandler<ActionEvent> btnCharacterListener;
 	public EventHandler<ActionEvent> btnLevelListener;
 	public EventHandler<ActionEvent> btnNextListener;
+	public EventHandler<ActionEvent> btnPlayListener;
 	public EventHandler<ActionEvent> btnHowtoPlayListener;
 	public Text Ruletxt;
+	public Text Controltxt;
 	public String[] RuleContent = new String[5];
 	public int count = 0;
 
@@ -73,7 +76,11 @@ public class CopMaze extends Application {
 		VBox ruleRoot = new VBox();
 		ruleScene = new Scene(ruleRoot);
 		ruleRoot.setAlignment(Pos.CENTER);
-
+		
+		VBox controlRoot = new VBox();
+		controlScene = new Scene(controlRoot);
+		controlRoot.setAlignment(Pos.CENTER);
+		
 		initListener(primaryStage);
 
 		initGUI(root);
@@ -81,6 +88,7 @@ public class CopMaze extends Application {
 		levelGUI(levelRoot);
 		mazeGUI(mazeRoot);
 		ruleGUI(ruleRoot);
+		controlGUI(controlRoot);
 
 		String css = this.getClass().getResource("styles.css").toExternalForm();
 		scene.getStylesheets().add(css);
@@ -88,6 +96,7 @@ public class CopMaze extends Application {
 		levelScene.getStylesheets().add(css);
 		mazeScene.getStylesheets().add(css);
 		ruleScene.getStylesheets().add(css);
+		controlScene.getStylesheets().add(css);
 
 		primaryStage.setTitle("Cop Maze");
 		primaryStage.setWidth(WIDTH);
@@ -136,12 +145,23 @@ public class CopMaze extends Application {
 		btnNextListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-
+				
 				Ruletxt.setText(RuleContent[count]);
 				if (count < 4) {
 					count++;
 					Ruletxt.setText(RuleContent[count]);
-				}
+				} else if (count == 4) {
+					stage.setScene(controlScene);
+					count = 0;
+				} 
+		
+			}
+		};
+		
+		btnPlayListener = new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				stage.setScene(characterScene);
 			}
 		};
 
@@ -306,7 +326,7 @@ public class CopMaze extends Application {
 		label.setPadding(new Insets(20, 10, 20, 10));
 
 		Rectangle rectangle = new Rectangle(430, 300);
-		rectangle.setId("ruleBox");
+		rectangle.setId("Box");
 		rectangle.setArcHeight(30);
 		rectangle.setArcWidth(30);
 		rectangle.setStroke(Color.TRANSPARENT);
@@ -318,7 +338,7 @@ public class CopMaze extends Application {
 		RuleContent[4] = "5. Escape through the opened door.";
 
 		Ruletxt = new Text();
-		Ruletxt.setId("Ruletxt");
+		Ruletxt.setId("Boxtxt");
 		Ruletxt.setText(RuleContent[0]);
 		
 		StackPane stack = new StackPane();
@@ -338,41 +358,39 @@ public class CopMaze extends Application {
 	}
 
 	public void controlGUI(Pane root) {
+		
+		root.setPadding(new Insets(15));
 		Label label = new Label("Game Control");
-		label.setId("controlTitle");
-		label.setPadding(new Insets(20, 50, 20, 50));
-
-		Rectangle rectangle = new Rectangle(400, 300);
+		label.setId("title2");
+		label.setPadding(new Insets(20, 10, 20, 10));
+		
+		Rectangle rectangle = new Rectangle(430, 300);
+		rectangle.setId("Box");
 		rectangle.setArcHeight(30);
 		rectangle.setArcWidth(30);
 		rectangle.setStroke(Color.TRANSPARENT);
-		rectangle.setStyle("-fx-fill: white; -fx-opacity: 0.5;");
 
-		RuleContent[0] = "1. Move around the maze and collect all the gems.";
-		RuleContent[1] = "2. You should avoid policmen while moving around.";
-		RuleContent[2] = "3. When the key appears, go get it.";
-		RuleContent[3] = "4. Drag the key and drop it to the door to unlock it.";
-		RuleContent[4] = "5. Escape through the opened door.";
-
-		Ruletxt = new Text();
-		Ruletxt.setText(RuleContent[0]);
-
+		Controltxt = new Text();
+		Controltxt.setId("Boxtxt");
+		Controltxt.setText("1. Move around with keyborads.\n" 
+		+ "2. Put light on the camera to look further at night.\n"
+		+ "3. Smash the space bar to use Hide Mode.\n\n"
+		+ "NOTE: You only have 2 days to steal the gems and escape!");
+		
 		StackPane stack = new StackPane();
-		stack.getChildren().addAll(rectangle, Ruletxt);
+		stack.getChildren().addAll(rectangle, Controltxt);
+		
+		Button btnPlay = new Button("Play");
+		btnPlay.setPrefSize(60, 40);
+		btnPlay.setId("btn2");
+		btnPlay.setOnAction(btnPlayListener);
+		
+		StackPane fullStack = new StackPane();
+		fullStack.setAlignment(Pos.BOTTOM_RIGHT);
+		fullStack.getChildren().addAll(stack, btnPlay);
 
-		Button btnNext = new Button("Next");
-		btnNext.setAlignment(Pos.CENTER_RIGHT);
-		btnNext.setOnAction(btnNextListener);
-
-		Button btnPlay = new Button("Play Game");
-		btnPlay.setAlignment(Pos.CENTER_RIGHT);
-		// btnNext.setOnAction(btnPlayListener);
-
-		if (count >= 0 && count <= 3) {
-			root.getChildren().addAll(label, stack, btnNext);
-		} else {
-			root.getChildren().addAll(label, stack, btnPlay);
-		}
+		root.getChildren().addAll(label, fullStack);
+		
 	}
 
 }
