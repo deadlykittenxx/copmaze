@@ -71,39 +71,40 @@ public class Maze {
     // Random walk from start to end with no loops, returns early if joining the maze
     private ArrayList<Coordinate> randomWalk(Coordinate start, Coordinate end) {
         ArrayList<Coordinate> path = new ArrayList<Coordinate>();
-        path.add(new Coordinate(start.x, start.y));
+        path.add(start);
+        Coordinate current = new Coordinate(start.x, start.y);
         // While not joining the maze and not reaching the target
-        while (maze[start.x][start.y] == 0 && (start.x != end.x || start.y != end.y)) {
+        while (maze[current.x][current.y] == 0 && (current.x != end.x || current.y != end.y)) {
             // Go in one random direction
             int direction = (int) (Math.random() * 4);
-            if (direction == 0) {
-                if (start.x > 0) {
-                    start.x--;
+            if (direction == 0) {  // Left
+                if (current.x > 0) {
+                    current.x--;
                 }
-            } else if (direction == 1) {
-                if (start.x < maze.length - 1) {
-                    start.x++;
+            } else if (direction == 1) {  // Right
+                if (current.x < getWidth()-1) {
+                    current.x++;
                 }
-            } else if (direction == 2) {
-                if (start.y > 0) {
-                    start.y--;
+            } else if (direction == 2) {  // Up
+                if (current.y > 0) {
+                    current.y--;
                 }
-            } else {
-                if (start.y < maze[0].length - 1) {
-                    start.y++;
+            } else {  // Down
+                if (current.y < getHeight() - 1) {
+                    current.y++;
                 }
             }
             // Detect cycles
             for (int i = 0; i < path.size(); i++) {
                 Coordinate c = path.get(i);
-                if (c.x == start.x && c.y == start.y) {
+                if (c.x == current.x && c.y == current.y) {  // If we've already been there
                     // Found a cycle, remove everything from this point
-                    path.subList(i, path.size()).clear();
+                    path.subList(i, path.size()).clear();  // Remove everything from index i to the end
                     break;
                 }
             }
             // Add the new cell to the path
-            path.add(new Coordinate(start.x, start.y));
+            path.add(new Coordinate(current.x, current.y));
         }
         return path;
     }
