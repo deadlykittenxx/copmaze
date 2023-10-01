@@ -20,7 +20,7 @@
 .text {
 }
 
-#btn {
+#btnStyle1 {
 	-fx-background-color: transparent;
 	-fx-background-image: url(/resources/image/buttonGray.png);
 	-fx-background-repeat: no-repeat;
@@ -30,7 +30,7 @@
 	-fx-font-family: 'Quicksand';
 }
 
-#btn2 {
+#btnStyle2 {
 	-fx-font-size: 15;
 }
 
