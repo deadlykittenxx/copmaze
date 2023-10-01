@@ -1,17 +1,10 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -35,8 +28,6 @@ public class CopMaze extends Application {
 	private static final int GRID_SIZE = 20; // Number of pixels per cell
 	private static final int BORDER_SIZE = 2;
 
-	private Cell[][] grid;
-
 	private Scene initScene;
 	private Scene characterScene;
 	private Scene levelScene;
@@ -56,6 +47,7 @@ public class CopMaze extends Application {
 	private String[] contentOfRule = new String[8];
 	private Text txtRule;
 	private int howToPlayStep = 0;
+	private Character player;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -128,7 +120,7 @@ public class CopMaze extends Application {
 				 * Create new Character
 				 */
 				Button btn = (Button) event.getSource();
-				Character player = new Character(btn.getText());
+				player = new Character(btn.getText());
 				stage.setScene(levelScene);
 			}
 		};
