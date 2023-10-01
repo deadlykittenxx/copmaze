@@ -18,7 +18,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -35,21 +34,20 @@ public class CopMaze extends Application {
 	private int numCols;
 	private Cell[][] grid;
 
-	public Scene characterScene;
-	public Scene levelScene;
-	public Scene mazeScene;
-	public Scene ruleScene;
-	public EventHandler<ActionEvent> btnStartListener;
-	public EventHandler<ActionEvent> btnCharacterListener;
-	public EventHandler<ActionEvent> btnLevelListener;
-	public EventHandler<ActionEvent> btnNextListener;
-	public EventHandler<ActionEvent> btnHowtoPlayListener;
-	public Text Ruletxt;
-	public Button Rulebtn;
-	public Label RuleLabel;
-	public String[] RuleContent = new String[8];
-	public int count1 = 0;
-	public int count2 = 0;
+	private Scene characterScene;
+	private Scene levelScene;
+	private Scene mazeScene;
+	private Scene ruleScene;
+	private EventHandler<ActionEvent> btnStartListener;
+	private EventHandler<ActionEvent> btnCharacterListener;
+	private EventHandler<ActionEvent> btnLevelListener;
+	private EventHandler<ActionEvent> btnRuleListener;
+	private EventHandler<ActionEvent> btnHowtoPlayListener;
+	private Text txtRule;
+	private Button btnRule;
+	private Label lblRule;
+	private String[] contentOfRule = new String[8];
+	private int howtoPlayStep = 0;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -136,31 +134,27 @@ public class CopMaze extends Application {
 			}
 		};
 
-		btnNextListener = new EventHandler<ActionEvent>() {
+		btnRuleListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
 
-				Ruletxt.setText(RuleContent[count1]);
-				if (count1 < 7) {
-					count1++;
-					Ruletxt.setText(RuleContent[count1]);
+				txtRule.setText(contentOfRule[howtoPlayStep]);
+				if (howtoPlayStep < 7) {
+					howtoPlayStep++;
+					txtRule.setText(contentOfRule[howtoPlayStep]);
 
-					if (count2 < 3) {
-						RuleLabel.setText("How to Play!");
-						count2++;
-					} else if (count2 >= 3 && count2 < 6) {
-						RuleLabel.setText("Game Control");
-						count2++;
-					} else if (count2 == 6) {
-						RuleLabel.setText("Be careful!");
-						Rulebtn.setText("Play");
-						count2++;
+					if (howtoPlayStep < 4) {
+						lblRule.setText("How to Play!");
+					} else if (howtoPlayStep >= 4 && howtoPlayStep < 7) {
+						lblRule.setText("Game Control");
+					} else if (howtoPlayStep == 7) {
+						lblRule.setText("Be careful!");
+						btnRule.setText("Play");
 					}
 
 				} else {
 					stage.setScene(characterScene);
-					count1 = 0;
-					count2 = 0;
+					howtoPlayStep = 0;
 				}
 			}
 		};
@@ -187,47 +181,7 @@ public class CopMaze extends Application {
 		root.getChildren().add(canvas);
 
 	}
-
-	public void levelGUI(VBox root) {
-		Label label = new Label("Choose Your Level !");
-		label.setId("subTitle");
-		label.setPadding(new Insets(20, 50, 50, 50));
-
-		Button btnEasy = new Button("Easy");
-		Button btnHard = new Button("Hard");
-		Button btnSuperHard = new Button("Super Hard");
-
-		btnEasy.setId("btnStyle1");
-		btnHard.setId("btnStyle1");
-		btnSuperHard.setId("btnStyle1");
-
-		root.getChildren().addAll(label, btnEasy, btnHard, btnSuperHard);
-
-		btnEasy.setOnAction(btnLevelListener);
-		btnHard.setOnAction(btnLevelListener);
-		btnSuperHard.setOnAction(btnLevelListener);
-	}
-
-	/*
-	 * Choose Character
-	 */
-
-	public void characterGUI(VBox root) {
-		Label label = new Label("Choose Your Character !");
-		label.setId("subTitle");
-		label.setPadding(new Insets(20, 50, 50, 50));
-
-		Button btnJhonny = new Button("Johnny");
-		Button btnSarah = new Button("Sarah");
-		btnJhonny.setId("btnStyle1");
-		btnSarah.setId("btnStyle1");
-
-		root.getChildren().addAll(label, btnJhonny, btnSarah);
-
-		btnJhonny.setOnAction(btnCharacterListener);
-		btnSarah.setOnAction(btnCharacterListener);
-	}
-
+	
 	/*
 	 * Initalize the first Scene
 	 */
@@ -250,6 +204,96 @@ public class CopMaze extends Application {
 		btnStart.setOnAction(btnStartListener);
 
 		root.getChildren().addAll(label, btnHowtoPlay, btnStart);
+
+	}
+	
+	/*
+	 * Choose Character
+	 */
+
+	public void characterGUI(VBox root) {
+		Label label = new Label("Choose Your Character !");
+		label.setId("subTitle");
+		label.setPadding(new Insets(20, 50, 50, 50));
+
+		Button btnJhonny = new Button("Johnny");
+		Button btnSarah = new Button("Sarah");
+		btnJhonny.setId("btnStyle1");
+		btnSarah.setId("btnStyle1");
+
+		root.getChildren().addAll(label, btnJhonny, btnSarah);
+
+		btnJhonny.setOnAction(btnCharacterListener);
+		btnSarah.setOnAction(btnCharacterListener);
+	}
+	
+	/*
+	 * Choose Level
+	 */
+
+	public void levelGUI(VBox root) {
+		Label label = new Label("Choose Your Level !");
+		label.setId("subTitle");
+		label.setPadding(new Insets(20, 50, 50, 50));
+
+		Button btnEasy = new Button("Easy");
+		Button btnHard = new Button("Hard");
+		Button btnSuperHard = new Button("Super Hard");
+
+		btnEasy.setId("btnStyle1");
+		btnHard.setId("btnStyle1");
+		btnSuperHard.setId("btnStyle1");
+
+		root.getChildren().addAll(label, btnEasy, btnHard, btnSuperHard);
+
+		btnEasy.setOnAction(btnLevelListener);
+		btnHard.setOnAction(btnLevelListener);
+		btnSuperHard.setOnAction(btnLevelListener);
+	}
+	
+	/*
+	 * Show Rules
+	 */
+	
+	public void ruleGUI(Pane root) {
+
+		root.setPadding(new Insets(15));
+		lblRule = new Label("How to play!");
+		lblRule.setId("subTitle");
+		lblRule.setPadding(new Insets(20, 10, 20, 10));
+
+		Rectangle rectangle = new Rectangle(430, 300);
+		rectangle.setId("Box");
+		rectangle.setArcHeight(30);
+		rectangle.setArcWidth(30);
+		rectangle.setStroke(Color.TRANSPARENT);
+
+		contentOfRule[0] = "1. Move around the maze and collect all the gems.";
+		contentOfRule[1] = "2. You should avoid policmen while moving around.";
+		contentOfRule[2] = "3. When the key appears, go get it.";
+		contentOfRule[3] = "4. Drag the key and drop it to the door to unlock it.";
+		contentOfRule[4] = "1. Move around with keyborad arrows.";
+		contentOfRule[5] = "2. Put light on the camera to look further at night.";
+		contentOfRule[6] = "3. Smash the space bar to use Hide Mode.";
+		contentOfRule[7] = "You only have 2 days to steal the gems and escape!";
+
+		txtRule = new Text();
+		txtRule.setId("Boxtxt");
+		txtRule.setText(contentOfRule[0]);
+
+		StackPane stack = new StackPane();
+		stack.getChildren().addAll(rectangle, txtRule);
+
+		btnRule = new Button("Next");
+		btnRule.setPrefSize(60, 40);
+		btnRule.setId("btnStyle2");
+		btnRule.setOnAction(btnRuleListener);
+
+		StackPane fullStack = new StackPane();
+		fullStack.setAlignment(Pos.BOTTOM_RIGHT);
+		fullStack.getChildren().addAll(stack, btnRule);
+
+		root.getChildren().addAll(lblRule, fullStack);
 
 	}
 
@@ -316,48 +360,6 @@ public class CopMaze extends Application {
 				}
 			}
 		}
-	}
-
-	public void ruleGUI(Pane root) {
-
-		root.setPadding(new Insets(15));
-		RuleLabel = new Label("How to play!");
-		RuleLabel.setId("subTitle");
-		RuleLabel.setPadding(new Insets(20, 10, 20, 10));
-
-		Rectangle rectangle = new Rectangle(430, 300);
-		rectangle.setId("Box");
-		rectangle.setArcHeight(30);
-		rectangle.setArcWidth(30);
-		rectangle.setStroke(Color.TRANSPARENT);
-
-		RuleContent[0] = "1. Move around the maze and collect all the gems.";
-		RuleContent[1] = "2. You should avoid policmen while moving around.";
-		RuleContent[2] = "3. When the key appears, go get it.";
-		RuleContent[3] = "4. Drag the key and drop it to the door to unlock it.";
-		RuleContent[4] = "1. Move around with keyborad arrows.";
-		RuleContent[5] = "2. Put light on the camera to look further at night.";
-		RuleContent[6] = "3. Smash the space bar to use Hide Mode.";
-		RuleContent[7] = "You only have 2 days to steal the gems and escape!";
-
-		Ruletxt = new Text();
-		Ruletxt.setId("Boxtxt");
-		Ruletxt.setText(RuleContent[0]);
-
-		StackPane stack = new StackPane();
-		stack.getChildren().addAll(rectangle, Ruletxt);
-
-		Rulebtn = new Button("Next");
-		Rulebtn.setPrefSize(60, 40);
-		Rulebtn.setId("btnStyle2");
-		Rulebtn.setOnAction(btnNextListener);
-
-		StackPane fullStack = new StackPane();
-		fullStack.setAlignment(Pos.BOTTOM_RIGHT);
-		fullStack.getChildren().addAll(stack, Rulebtn);
-
-		root.getChildren().addAll(RuleLabel, fullStack);
-
 	}
 
 }
