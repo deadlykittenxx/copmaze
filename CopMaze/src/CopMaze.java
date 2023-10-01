@@ -13,7 +13,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -39,14 +38,14 @@ public class CopMaze extends Application {
 	private Scene mazeScene;
 	private Scene ruleScene;
 	private EventHandler<ActionEvent> btnStartListener;
+	private EventHandler<ActionEvent> btnHowtoPlayListener;
 	private EventHandler<ActionEvent> btnCharacterListener;
 	private EventHandler<ActionEvent> btnLevelListener;
 	private EventHandler<ActionEvent> btnRuleListener;
-	private EventHandler<ActionEvent> btnHowtoPlayListener;
-	private Text txtRule;
 	private Button btnRule;
 	private Label lblRule;
 	private String[] contentOfRule = new String[8];
+	private Text txtRule;
 	private int howtoPlayStep = 0;
 
 	public static void main(String[] args) {
@@ -55,7 +54,6 @@ public class CopMaze extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
 		VBox root = new VBox(15);
 		Scene scene = new Scene(root);
 		root.setAlignment(Pos.CENTER);
@@ -68,12 +66,13 @@ public class CopMaze extends Application {
 		levelScene = new Scene(levelRoot);
 		levelRoot.setAlignment(Pos.CENTER);
 
-		VBox mazeRoot = new VBox();
-		mazeScene = new Scene(mazeRoot);
-
 		VBox ruleRoot = new VBox();
 		ruleScene = new Scene(ruleRoot);
 		ruleRoot.setAlignment(Pos.CENTER);
+		
+		VBox mazeRoot = new VBox();
+		mazeScene = new Scene(mazeRoot);
+		mazeRoot.setAlignment(Pos.CENTER);
 
 		initListener(primaryStage);
 
@@ -185,7 +184,7 @@ public class CopMaze extends Application {
 	/*
 	 * Initalize the first Scene
 	 */
-	public void initGUI(Pane root) {
+	public void initGUI(VBox root) {
 		root.setId("initScene");
 
 		Label label = new Label("Cop Maze");
@@ -255,7 +254,7 @@ public class CopMaze extends Application {
 	 * Show Rules
 	 */
 	
-	public void ruleGUI(Pane root) {
+	public void ruleGUI(VBox root) {
 
 		root.setPadding(new Insets(15));
 		lblRule = new Label("How to play!");
