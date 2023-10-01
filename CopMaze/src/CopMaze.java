@@ -29,12 +29,11 @@ public class CopMaze extends Application {
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
 
-	private static final int MAZE_WIDTH = 400;
-	private static final int MAZE_HEIGHT = 400;
-	private static final int GRID_SIZE = 20;
+	private static final int MAZE_WIDTH = 30; // Number of cells
+	private static final int MAZE_HEIGHT = 25; // Number of cells
+	private static final int GRID_SIZE = 20; // Number of pixels per cell
+	private static final int BORDER_SIZE = 2;
 
-	private int numRows;
-	private int numCols;
 	private Cell[][] grid;
 
 	private Scene characterScene;
@@ -65,14 +64,12 @@ public class CopMaze extends Application {
 
 		BorderPane characterRoot = new BorderPane();
 		characterScene = new Scene(characterRoot);
-
-		VBox levelRoot = new VBox(15);
+		
+		BorderPane levelRoot = new BorderPane();
 		levelScene = new Scene(levelRoot);
-		levelRoot.setAlignment(Pos.CENTER);
-
-		VBox ruleRoot = new VBox();
+		
+		BorderPane ruleRoot = new BorderPane();
 		ruleScene = new Scene(ruleRoot);
-		ruleRoot.setAlignment(Pos.CENTER);
 		
 		VBox mazeRoot = new VBox();
 		mazeScene = new Scene(mazeRoot);
@@ -166,24 +163,14 @@ public class CopMaze extends Application {
 	}
 
 	public void mazeGUI(VBox root) {
-		numRows = MAZE_HEIGHT / GRID_SIZE;
-		numCols = MAZE_WIDTH / GRID_SIZE;
+		
+		Maze maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT);
 
-		grid = new Cell[numRows][numCols];
-
-		for (int i = 0; i < numRows; i++) {
-			for (int j = 0; j < numCols; j++) {
-				grid[i][j] = new Cell(i, j);
-			}
-		}
-
-		generateMaze();
-
-		Canvas canvas = new Canvas(MAZE_WIDTH, MAZE_HEIGHT);
-		drawMaze(canvas.getGraphicsContext2D());
+		Canvas canvas = new Canvas(MAZE_WIDTH * GRID_SIZE + BORDER_SIZE, MAZE_HEIGHT * GRID_SIZE + BORDER_SIZE);
+		maze.draw(canvas.getGraphicsContext2D(), GRID_SIZE, BORDER_SIZE);
 
 		root.getChildren().add(canvas);
-
+		
 	}
 	
 	/*
@@ -212,6 +199,19 @@ public class CopMaze extends Application {
 	}
 	
 	/*
+	 * Generating BackButtonBar
+	 */
+	private Pane getBackButtonBar() {
+		AnchorPane topPane = new AnchorPane();
+		btnGoBack = new Button("<");
+		topPane.getChildren().add(btnGoBack);
+		topPane.setPrefHeight(30);
+		AnchorPane.setTopAnchor(btnGoBack, 10.0);
+		AnchorPane.setLeftAnchor(btnGoBack, 10.0);
+		return topPane;
+	}
+	
+	/*
 	 * Choose Character
 	 */
 
@@ -236,21 +236,13 @@ public class CopMaze extends Application {
 		root.setTop(getBackButtonBar());
 	}
 	
-	private Pane getBackButtonBar() {
-		AnchorPane topPane = new AnchorPane();
-		btnGoBack = new Button("<");
-		topPane.getChildren().add(btnGoBack);
-		topPane.setPrefHeight(30);
-		AnchorPane.setTopAnchor(btnGoBack, 10.0);
-		AnchorPane.setLeftAnchor(btnGoBack, 10.0);
-		return topPane;
-	}
-	
 	/*
 	 * Choose Level
 	 */
 
-	public void levelGUI(VBox root) {
+	public void levelGUI(BorderPane root) {
+		VBox menu = new VBox(15);
+		menu.setAlignment(Pos.CENTER);
 		Label label = new Label("Choose Your Level !");
 		label.setId("subTitle");
 		label.setPadding(new Insets(20, 50, 50, 50));
@@ -263,18 +255,23 @@ public class CopMaze extends Application {
 		btnHard.setId("btnStyle1");
 		btnSuperHard.setId("btnStyle1");
 
-		root.getChildren().addAll(label, btnEasy, btnHard, btnSuperHard);
+		menu.getChildren().addAll(label, btnEasy, btnHard, btnSuperHard);
 
 		btnEasy.setOnAction(btnLevelListener);
 		btnHard.setOnAction(btnLevelListener);
 		btnSuperHard.setOnAction(btnLevelListener);
+		
+		root.setCenter(menu);
+		root.setTop(getBackButtonBar());
 	}
 	
 	/*
 	 * Show Rules
 	 */
 	
-	public void ruleGUI(VBox root) {
+	public void ruleGUI(BorderPane root) {
+		VBox menu = new VBox(15);
+		menu.setAlignment(Pos.CENTER);
 
 		root.setPadding(new Insets(15));
 		lblRule = new Label("How to play!");
@@ -314,71 +311,6 @@ public class CopMaze extends Application {
 
 		root.getChildren().addAll(lblRule, fullStack);
 
-	}
-
-	private void generateMaze() {
-		Stack<Cell> stack = new Stack<>();
-		Cell current = grid[0][0];
-		current.visited = true;
-
-		while (true) {
-			List<Cell> neighbors = getUnvisitedNeighbors(current);
-			if (!neighbors.isEmpty()) {
-				Cell neighbor = neighbors.get((int) (Math.random() * neighbors.size()));
-				removeWall(current, neighbor);
-				stack.push(current);
-				current = neighbor;
-				current.visited = true;
-			} else if (!stack.isEmpty()) {
-				current = stack.pop();
-			} else {
-				break;
-			}
-		}
-	}
-
-	private List<Cell> getUnvisitedNeighbors(Cell cell) {
-		int row = cell.row;
-		int col = cell.col;
-		List<Cell> neighbors = new ArrayList<>();
-
-		if (row > 1 && !grid[row - 2][col].visited) {
-			neighbors.add(grid[row - 2][col]);
-		}
-		if (row < numRows - 2 && !grid[row + 2][col].visited) {
-			neighbors.add(grid[row + 2][col]);
-		}
-		if (col > 1 && !grid[row][col - 2].visited) {
-			neighbors.add(grid[row][col - 2]);
-		}
-		if (col < numCols - 2 && !grid[row][col + 2].visited) {
-			neighbors.add(grid[row][col + 2]);
-		}
-
-		Collections.shuffle(neighbors);
-		return neighbors;
-	}
-
-	private void removeWall(Cell current, Cell neighbor) {
-		int rowDiff = neighbor.row - current.row;
-		int colDiff = neighbor.col - current.col;
-		int wallRow = current.row + rowDiff / 2;
-		int wallCol = current.col + colDiff / 2;
-		grid[wallRow][wallCol].visited = true;
-	}
-
-	private void drawMaze(GraphicsContext gc) {
-		gc.setFill(Color.BLACK);
-		gc.fillRect(0, 0, MAZE_WIDTH, MAZE_HEIGHT);
-		gc.setFill(Color.WHITE);
-
-		for (int row = 0; row < numRows; row++) {
-			for (int col = 0; col < numCols; col++) {
-				if (!grid[row][col].visited) {
-					gc.fillRect(col * GRID_SIZE, row * GRID_SIZE, GRID_SIZE, GRID_SIZE);
-				}
-			}
-		}
 	}
 
 }

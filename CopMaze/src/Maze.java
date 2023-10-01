@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
 class Coordinate {
     public int x;
     public int y;
@@ -141,6 +144,33 @@ public class Maze {
         }
         return unconnectedCells;
     }
+
+	public void draw(GraphicsContext gc, double cellSizePx, double lineWidthPx) {
+		gc.setFill(Color.WHITE);
+		gc.fillRect(0, 0, cellSizePx*getWidth(), cellSizePx*getHeight());
+		gc.setFill(Color.BLACK);
+
+		for (int y = 0; y < getHeight(); y++) {
+			for (int x = 0; x < getWidth(); x++) {
+				if (hasTopWall(x, y)) {
+                    gc.fillRect(x * cellSizePx, y * cellSizePx, cellSizePx, lineWidthPx);
+				}
+                if (hasLeftWall(x, y)) {
+                    gc.fillRect(x * cellSizePx, y * cellSizePx, lineWidthPx, cellSizePx);
+                }
+                if (x == getWidth() - 1) {
+                    if (hasRightWall(x, y)) {
+                        gc.fillRect((x + 1) * cellSizePx, y * cellSizePx, lineWidthPx, cellSizePx);
+                    }
+                }
+                if (y == getHeight() - 1) {
+                    if (hasBottomWall(x, y)) {
+                        gc.fillRect(x * cellSizePx, (y + 1) * cellSizePx, cellSizePx, lineWidthPx);
+                    }
+                }
+			}
+		}
+	}
 
     public String toString() {
         String s = "";
