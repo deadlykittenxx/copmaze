@@ -37,6 +37,7 @@ public class CopMaze extends Application {
 
 	private Cell[][] grid;
 
+	private Scene initScene;
 	private Scene characterScene;
 	private Scene levelScene;
 	private Scene mazeScene;
@@ -47,13 +48,14 @@ public class CopMaze extends Application {
 	private EventHandler<ActionEvent> btnLevelListener;
 	private EventHandler<ActionEvent> btnRuleNextListener;
 	private EventHandler<ActionEvent> btnRulePreviousListener;
+	private EventHandler<ActionEvent> btnGoBackListener;
 	private Button btnGoBack;
 	private Button btnRuleNext;
 	private Button btnRulePrevious;
 	private Label lblRule;
 	private String[] contentOfRule = new String[8];
 	private Text txtRule;
-	private int howtoPlayStep = 0;
+	private int howToPlayStep = 0;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -61,9 +63,9 @@ public class CopMaze extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		VBox root = new VBox(15);
-		Scene scene = new Scene(root);
-		root.setAlignment(Pos.CENTER);
+		VBox initRoot = new VBox(15);
+		initScene = new Scene(initRoot);
+		initRoot.setAlignment(Pos.CENTER);
 
 		BorderPane characterRoot = new BorderPane();
 		characterScene = new Scene(characterRoot);
@@ -80,14 +82,14 @@ public class CopMaze extends Application {
 
 		initListener(primaryStage);
 
-		initGUI(root);
+		initGUI(initRoot);
 		characterGUI(characterRoot);
 		levelGUI(levelRoot);
 		mazeGUI(mazeRoot);
 		ruleGUI(ruleRoot);
 
 		String css = this.getClass().getResource("styles.css").toExternalForm();
-		scene.getStylesheets().add(css);
+		initScene.getStylesheets().add(css);
 		characterScene.getStylesheets().add(css);
 		levelScene.getStylesheets().add(css);
 		mazeScene.getStylesheets().add(css);
@@ -96,7 +98,7 @@ public class CopMaze extends Application {
 		primaryStage.setTitle("Cop Maze");
 		primaryStage.setWidth(WIDTH);
 		primaryStage.setHeight(HEIGHT);
-		primaryStage.setScene(scene);
+		primaryStage.setScene(initScene);
 		primaryStage.show();
 		
 	}
@@ -141,12 +143,11 @@ public class CopMaze extends Application {
 		btnRuleNextListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				if (howtoPlayStep < 7) {
-					howtoPlayStep++;
-					updateRules();
+				if (howToPlayStep < 7) {
+					updateRules(howToPlayStep + 1);
 				} else {
 					stage.setScene(characterScene);
-					howtoPlayStep = 0;
+					howToPlayStep = 0;
 				}
 			}
 		};
@@ -154,10 +155,17 @@ public class CopMaze extends Application {
 		btnRulePreviousListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				if (howtoPlayStep > 0) {
-					howtoPlayStep--;
-					updateRules();
+				if (howToPlayStep > 0) {
+					updateRules(howToPlayStep - 1);
 				}
+			}
+		};
+		
+		btnGoBackListener = new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				stage.setScene(initScene);
+				updateRules(0);
 			}
 		};
 
@@ -169,6 +177,7 @@ public class CopMaze extends Application {
 	private Pane getBackButtonBar() {
 		AnchorPane topPane = new AnchorPane();
 		btnGoBack = new Button("<");
+		btnGoBack.setOnAction(btnGoBackListener);
 		topPane.getChildren().add(btnGoBack);
 		topPane.setPrefHeight(30);
 		AnchorPane.setTopAnchor(btnGoBack, 10.0);
@@ -179,16 +188,20 @@ public class CopMaze extends Application {
 	/*
 	 * Update RuleGUI
 	 */
-	void updateRules() {
-		if (howtoPlayStep <= 7) {
-			txtRule.setText(contentOfRule[howtoPlayStep]);
+	void updateRules(int step) {
+		btnRulePrevious.setVisible(true);
+		howToPlayStep = step;
+		if (howToPlayStep <= 7) {
+			txtRule.setText(contentOfRule[howToPlayStep]);
 			btnRuleNext.setText(">");
-
-			if (howtoPlayStep < 4) {
+			if (howToPlayStep == 0) {
+				btnRulePrevious.setVisible(false);
+			}
+			if (howToPlayStep < 4) {
 				lblRule.setText("How to Play!");
-			} else if (howtoPlayStep >= 4 && howtoPlayStep < 7) {
+			} else if (howToPlayStep >= 4 && howToPlayStep < 7) {
 				lblRule.setText("Game Controls");
-			} else if (howtoPlayStep == 7) {
+			} else if (howToPlayStep == 7) {
 				lblRule.setText("Be careful!");
 				btnRuleNext.setText("Play");
 			}
@@ -320,7 +333,6 @@ public class CopMaze extends Application {
 
 		txtRule = new Text();
 		txtRule.setId("Boxtxt");
-		txtRule.setText(contentOfRule[0]);
 
 		StackPane stack = new StackPane();
 		stack.getChildren().addAll(rectangle, txtRule);
@@ -344,6 +356,8 @@ public class CopMaze extends Application {
 		
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
+		
+		updateRules(0); // Set screen 0
 
 	}
 
