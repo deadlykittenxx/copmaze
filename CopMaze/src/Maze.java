@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -12,6 +13,15 @@ class Coordinate {
     }
 }
 
+class Wall {
+    public Coordinate c;
+    public int location;
+    Wall(Coordinate c, int location) {
+        this.c = c;
+        this.location = location;
+    }
+}
+
 public class Maze {
     static final int TOP = 8;
     static final int RIGHT = 4;
@@ -20,8 +30,10 @@ public class Maze {
 
     private static int[][] maze;
 
-    public Maze(int width, int height) {
+    public Maze(int width, int height, double easiness) {
         generate(width, height);
+        makeMazeEasier(easiness);
+        addExit();
     }
 
     public int getWidth() {
@@ -135,8 +147,8 @@ public class Maze {
 
     private ArrayList<Coordinate> getUnconnectedCells() {
         ArrayList<Coordinate> unconnectedCells = new ArrayList<Coordinate>();
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[0].length; j++) {
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
                 Coordinate c = new Coordinate(i, j);
                 if (maze[i][j] == 0) {
                     unconnectedCells.add(c);
@@ -146,6 +158,68 @@ public class Maze {
         return unconnectedCells;
     }
 
+    private ArrayList<Wall> getNonBorderWalls() {
+        ArrayList<Wall> nonBorderWalls = new ArrayList<Wall>();
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
+                Coordinate c = new Coordinate(i, j);
+                if (j > 0 && hasTopWall(i, j)) {
+                    nonBorderWalls.add(new Wall(c, TOP));
+                }
+                if (i > 0 && hasLeftWall(i, j)) {
+                    nonBorderWalls.add(new Wall(c, LEFT));
+                }
+            }
+        }
+        return nonBorderWalls;
+    }
+
+    private void makeMazeEasier(double coefficient) {
+        ArrayList<Wall> nonBorderWalls = getNonBorderWalls();
+        Collections.shuffle(nonBorderWalls);
+        int numWallsToRemove = (int) (coefficient * nonBorderWalls.size());
+        for (int i = 0; i < numWallsToRemove; i++) {
+            Wall w = nonBorderWalls.get(i);
+            Coordinate c = w.c;
+            if (w.location == TOP) {
+                maze[c.x][c.y] |= TOP;
+                maze[c.x][c.y - 1] |= BOTTOM;
+            } else { // Left
+                maze[c.x][c.y] |= LEFT;
+                maze[c.x - 1][c.y] |= RIGHT;
+            }
+        }
+    }
+
+    private ArrayList<Wall> getBorderWalls() {
+        ArrayList<Wall> borderWalls = new ArrayList<Wall>();
+        for (int i = 0; i < getWidth(); i++) {
+            borderWalls.add(new Wall(new Coordinate(i, 0), TOP));
+            borderWalls.add(new Wall(new Coordinate(i, getHeight() - 1), BOTTOM));
+        }
+        for (int j = 0; j < getHeight(); j++) {
+            borderWalls.add(new Wall(new Coordinate(0, j), LEFT));
+            borderWalls.add(new Wall(new Coordinate(getWidth() - 1, j), RIGHT));
+        }
+        return borderWalls;
+    }
+
+    private void addExit() {
+        ArrayList<Wall> borderWalls = getBorderWalls();
+        int index = (int) (Math.random() * borderWalls.size());
+        Wall w = borderWalls.get(index);
+        Coordinate c = w.c;
+        if (w.location == TOP) {
+            maze[c.x][c.y] |= TOP;
+        } else if (w.location == BOTTOM) {
+            maze[c.x][c.y] |= BOTTOM;
+        } else if (w.location == LEFT) {
+            maze[c.x][c.y] |= LEFT;
+        } else { // Right
+            maze[c.x][c.y] |= RIGHT;
+        }
+    }
+    
 	public void draw(GraphicsContext gc, double cellSizePx, double lineWidthPx) {
 		gc.setFill(Color.WHITE);
 		gc.fillRect(0, 0, cellSizePx*getWidth(), cellSizePx*getHeight());
@@ -175,36 +249,39 @@ public class Maze {
 
     public String toString() {
         String s = "";
-        for (int j = 0; j < maze[0].length; j++) {
+        for (int j = 0; j < getHeight(); j++) {
             // Top walls
-            for (int i = 0; i < maze.length; i++) {
+            for (int i = 0; i < getWidth(); i++) {
                 if (hasTopWall(i, j)) {
-                    s += "+--";
+                    s += "+---";
                 } else {
-                    s += "+  ";
+                    s += "+   ";
                 }
             }
             s += "+\n";
             // Left walls
-            for (int i = 0; i < maze.length; i++) {
+            for (int i = 0; i < getWidth(); i++) {
                 if (hasLeftWall(i, j)) {
-                    s += "|  ";
+                    s += "|   ";
                 } else {
-                    s += "   ";
+                    s += "    ";
                 }
             }
-            s += "|\n";
+            if (hasRightWall(getWidth() - 1, j)) {
+                s += "|\n";
+            } else {
+                s += " \n";
+            }
         }
         // Bottom walls
-        for (int i = 0; i < maze.length; i++) {
-            s += "+--";
+        for (int i = 0; i < getWidth(); i++) {
+            if (hasBottomWall(i, getHeight() - 1)) {
+                s += "+---";
+            } else {
+                s += "+   ";
+            }
         }
         s += "+\n";
         return s;
-    }
-
-    public static void main(String[] args) {
-        Maze maze = new Maze(7, 5);
-        System.out.println(maze);
     }
 }

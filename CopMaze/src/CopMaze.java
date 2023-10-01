@@ -27,6 +27,7 @@ public class CopMaze extends Application {
 	private static final int MAZE_HEIGHT = 15; // Number of cells
 	private static final int GRID_SIZE = 20; // Number of pixels per cell
 	private static final int BORDER_SIZE = 2;
+	private static final double EASINESS = 0.2;  // Number from 0 to 1, 1 remove all the walls
 
 	private Scene initScene;
 	private Scene characterScene;
@@ -206,7 +207,7 @@ public class CopMaze extends Application {
 	 */
 	public void mazeGUI(VBox root) {
 		
-		Maze maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT);
+		Maze maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS);
 
 		Canvas canvas = new Canvas(MAZE_WIDTH * GRID_SIZE + BORDER_SIZE, MAZE_HEIGHT * GRID_SIZE + BORDER_SIZE);
 		maze.draw(canvas.getGraphicsContext2D(), GRID_SIZE, BORDER_SIZE);
