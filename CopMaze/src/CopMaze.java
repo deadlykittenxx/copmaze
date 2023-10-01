@@ -8,11 +8,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -42,6 +46,7 @@ public class CopMaze extends Application {
 	private EventHandler<ActionEvent> btnCharacterListener;
 	private EventHandler<ActionEvent> btnLevelListener;
 	private EventHandler<ActionEvent> btnRuleListener;
+	private Button btnGoBack;
 	private Button btnRule;
 	private Label lblRule;
 	private String[] contentOfRule = new String[8];
@@ -58,9 +63,8 @@ public class CopMaze extends Application {
 		Scene scene = new Scene(root);
 		root.setAlignment(Pos.CENTER);
 
-		VBox characterRoot = new VBox(15);
+		BorderPane characterRoot = new BorderPane();
 		characterScene = new Scene(characterRoot);
-		characterRoot.setAlignment(Pos.CENTER);
 
 		VBox levelRoot = new VBox(15);
 		levelScene = new Scene(levelRoot);
@@ -94,6 +98,7 @@ public class CopMaze extends Application {
 		primaryStage.setHeight(HEIGHT);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
 	}
 
 	/*
@@ -210,20 +215,35 @@ public class CopMaze extends Application {
 	 * Choose Character
 	 */
 
-	public void characterGUI(VBox root) {
+	public void characterGUI(BorderPane root) {
+		VBox menu = new VBox(15);
+		menu.setAlignment(Pos.CENTER);
 		Label label = new Label("Choose Your Character !");
 		label.setId("subTitle");
 		label.setPadding(new Insets(20, 50, 50, 50));
 
-		Button btnJhonny = new Button("Johnny");
+		Button btnJohnny = new Button("Johnny");
 		Button btnSarah = new Button("Sarah");
-		btnJhonny.setId("btnStyle1");
+		btnJohnny.setId("btnStyle1");
 		btnSarah.setId("btnStyle1");
 
-		root.getChildren().addAll(label, btnJhonny, btnSarah);
+		menu.getChildren().addAll(label, btnJohnny, btnSarah);
 
-		btnJhonny.setOnAction(btnCharacterListener);
+		btnJohnny.setOnAction(btnCharacterListener);
 		btnSarah.setOnAction(btnCharacterListener);
+		
+		root.setCenter(menu);
+		root.setTop(getBackButtonBar());
+	}
+	
+	private Pane getBackButtonBar() {
+		AnchorPane topPane = new AnchorPane();
+		btnGoBack = new Button("<");
+		topPane.getChildren().add(btnGoBack);
+		topPane.setPrefHeight(30);
+		AnchorPane.setTopAnchor(btnGoBack, 10.0);
+		AnchorPane.setLeftAnchor(btnGoBack, 10.0);
+		return topPane;
 	}
 	
 	/*
