@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -29,8 +30,8 @@ public class CopMaze extends Application {
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
 
-	private static final int MAZE_WIDTH = 30; // Number of cells
-	private static final int MAZE_HEIGHT = 25; // Number of cells
+	private static final int MAZE_WIDTH = 20; // Number of cells
+	private static final int MAZE_HEIGHT = 15; // Number of cells
 	private static final int GRID_SIZE = 20; // Number of pixels per cell
 	private static final int BORDER_SIZE = 2;
 
@@ -44,9 +45,11 @@ public class CopMaze extends Application {
 	private EventHandler<ActionEvent> btnHowtoPlayListener;
 	private EventHandler<ActionEvent> btnCharacterListener;
 	private EventHandler<ActionEvent> btnLevelListener;
-	private EventHandler<ActionEvent> btnRuleListener;
+	private EventHandler<ActionEvent> btnRuleNextListener;
+	private EventHandler<ActionEvent> btnRulePreviousListener;
 	private Button btnGoBack;
-	private Button btnRule;
+	private Button btnRuleNext;
+	private Button btnRulePrevious;
 	private Label lblRule;
 	private String[] contentOfRule = new String[8];
 	private Text txtRule;
@@ -135,24 +138,12 @@ public class CopMaze extends Application {
 			}
 		};
 
-		btnRuleListener = new EventHandler<ActionEvent>() {
+		btnRuleNextListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-
-				txtRule.setText(contentOfRule[howtoPlayStep]);
 				if (howtoPlayStep < 7) {
 					howtoPlayStep++;
-					txtRule.setText(contentOfRule[howtoPlayStep]);
-
-					if (howtoPlayStep < 4) {
-						lblRule.setText("How to Play!");
-					} else if (howtoPlayStep >= 4 && howtoPlayStep < 7) {
-						lblRule.setText("Game Control");
-					} else if (howtoPlayStep == 7) {
-						lblRule.setText("Be careful!");
-						btnRule.setText("Play");
-					}
-
+					updateRules();
 				} else {
 					stage.setScene(characterScene);
 					howtoPlayStep = 0;
@@ -160,8 +151,54 @@ public class CopMaze extends Application {
 			}
 		};
 
-	}
+		btnRulePreviousListener = new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if (howtoPlayStep > 0) {
+					howtoPlayStep--;
+					updateRules();
+				}
+			}
+		};
 
+	}
+	
+	/*
+	 * Generating BackButtonBar
+	 */
+	private Pane getBackButtonBar() {
+		AnchorPane topPane = new AnchorPane();
+		btnGoBack = new Button("<");
+		topPane.getChildren().add(btnGoBack);
+		topPane.setPrefHeight(30);
+		AnchorPane.setTopAnchor(btnGoBack, 10.0);
+		AnchorPane.setLeftAnchor(btnGoBack, 10.0);
+		return topPane;
+	}
+	
+	/*
+	 * Update RuleGUI
+	 */
+	void updateRules() {
+		if (howtoPlayStep <= 7) {
+			txtRule.setText(contentOfRule[howtoPlayStep]);
+			btnRuleNext.setText(">");
+
+			if (howtoPlayStep < 4) {
+				lblRule.setText("How to Play!");
+			} else if (howtoPlayStep >= 4 && howtoPlayStep < 7) {
+				lblRule.setText("Game Controls");
+			} else if (howtoPlayStep == 7) {
+				lblRule.setText("Be careful!");
+				btnRuleNext.setText("Play");
+			}
+
+		}
+	}
+	
+	/*
+	 * Game Scene
+	 */
 	public void mazeGUI(VBox root) {
 		
 		Maze maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT);
@@ -198,18 +235,6 @@ public class CopMaze extends Application {
 
 	}
 	
-	/*
-	 * Generating BackButtonBar
-	 */
-	private Pane getBackButtonBar() {
-		AnchorPane topPane = new AnchorPane();
-		btnGoBack = new Button("<");
-		topPane.getChildren().add(btnGoBack);
-		topPane.setPrefHeight(30);
-		AnchorPane.setTopAnchor(btnGoBack, 10.0);
-		AnchorPane.setLeftAnchor(btnGoBack, 10.0);
-		return topPane;
-	}
 	
 	/*
 	 * Choose Character
@@ -218,7 +243,7 @@ public class CopMaze extends Application {
 	public void characterGUI(BorderPane root) {
 		VBox menu = new VBox(15);
 		menu.setAlignment(Pos.CENTER);
-		Label label = new Label("Choose Your Character !");
+		Label label = new Label("Choose Your Character!");
 		label.setId("subTitle");
 		label.setPadding(new Insets(20, 50, 50, 50));
 
@@ -243,7 +268,7 @@ public class CopMaze extends Application {
 	public void levelGUI(BorderPane root) {
 		VBox menu = new VBox(15);
 		menu.setAlignment(Pos.CENTER);
-		Label label = new Label("Choose Your Level !");
+		Label label = new Label("Choose Your Level!");
 		label.setId("subTitle");
 		label.setPadding(new Insets(20, 50, 50, 50));
 
@@ -272,11 +297,11 @@ public class CopMaze extends Application {
 	public void ruleGUI(BorderPane root) {
 		VBox menu = new VBox(15);
 		menu.setAlignment(Pos.CENTER);
-
-		root.setPadding(new Insets(15));
+		menu.setPadding(new Insets(15));
+		
 		lblRule = new Label("How to play!");
 		lblRule.setId("subTitle");
-		lblRule.setPadding(new Insets(20, 10, 20, 10));
+		lblRule.setPadding(new Insets(0, 10, 10, 10));
 
 		Rectangle rectangle = new Rectangle(430, 300);
 		rectangle.setId("Box");
@@ -299,17 +324,26 @@ public class CopMaze extends Application {
 
 		StackPane stack = new StackPane();
 		stack.getChildren().addAll(rectangle, txtRule);
+		stack.setPadding(new Insets(0, 10, 0, 10));
 
-		btnRule = new Button("Next");
-		btnRule.setPrefSize(60, 40);
-		btnRule.setId("btnStyle2");
-		btnRule.setOnAction(btnRuleListener);
+		btnRulePrevious = new Button("<");
+		btnRulePrevious.setPrefSize(60, 40);
+		btnRulePrevious.setId("btnStyle2");
+		btnRulePrevious.setOnAction(btnRulePreviousListener);
 
-		StackPane fullStack = new StackPane();
-		fullStack.setAlignment(Pos.BOTTOM_RIGHT);
-		fullStack.getChildren().addAll(stack, btnRule);
+		btnRuleNext = new Button(">");
+		btnRuleNext.setPrefSize(60, 40);
+		btnRuleNext.setId("btnStyle2");
+		btnRuleNext.setOnAction(btnRuleNextListener);
+		
+		HBox rulesScreen = new HBox();
+		rulesScreen.setAlignment(Pos.CENTER); // BOTTOM_CENTER
+		rulesScreen.getChildren().addAll(btnRulePrevious, stack, btnRuleNext);
 
-		root.getChildren().addAll(lblRule, fullStack);
+		menu.getChildren().addAll(lblRule, rulesScreen);
+		
+		root.setCenter(menu);
+		root.setTop(getBackButtonBar());
 
 	}
 
