@@ -6,11 +6,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -179,8 +177,8 @@ public class CopMaze extends Application {
 		btnGoBack.setId("BtnGoBack");
 		topPane.getChildren().add(btnGoBack);
 		topPane.setPrefHeight(30);
-		AnchorPane.setTopAnchor(btnGoBack, 10.0);
-		AnchorPane.setLeftAnchor(btnGoBack, 10.0);
+		AnchorPane.setTopAnchor(btnGoBack, 25.0);
+		AnchorPane.setLeftAnchor(btnGoBack, 25.0);
 		return topPane;
 	}
 	
@@ -213,12 +211,14 @@ public class CopMaze extends Application {
 	public void mazeGUI(VBox root) {
 		root.setId("mazeScene");
 		
+		
 		Maze maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS);
 
 		Canvas canvas = new Canvas(MAZE_WIDTH * GRID_SIZE + BORDER_SIZE, MAZE_HEIGHT * GRID_SIZE + BORDER_SIZE);
 		maze.draw(canvas.getGraphicsContext2D(), GRID_SIZE, BORDER_SIZE);
 
 		root.getChildren().add(canvas);
+		
 		
 	}
 	
@@ -228,23 +228,22 @@ public class CopMaze extends Application {
 	public void initGUI(VBox root) {
 		root.setId("initScene");
 
-		Label label = new Label("Cop Maze");
-		label.setId("mainTitle");
-		label.setPadding(new Insets(0, 50, 70, 50));
 
 		Button btnHowtoPlay = new Button("How to Play");
 		btnHowtoPlay.setPrefSize(120, 30);
 		btnHowtoPlay.setId("btnStyle1");
+		btnHowtoPlay.setPadding(new Insets(6, 8, 6, 8));
 
 		Button btnStart = new Button("Start");
 		btnStart.setPrefSize(120, 30);
 		btnStart.setId("btnStyle1");
+		btnStart.setPadding(new Insets(6, 8, 6, 8));
 
 		btnHowtoPlay.setOnAction(btnHowtoPlayListener);
 		btnStart.setOnAction(btnStartListener);
 
-		root.getChildren().addAll(label, btnHowtoPlay, btnStart);
-
+		root.getChildren().addAll(btnHowtoPlay, btnStart);
+		VBox.setMargin(btnHowtoPlay, new Insets(100, 0, 0, 0));
 	}
 	
 	
@@ -261,40 +260,40 @@ public class CopMaze extends Application {
 		
 		
 		HBox characterBox = new HBox();
-		VBox JohnnyBox = new VBox();
-		VBox SarahBox = new VBox();
+		VBox character1Box = new VBox();
+		VBox character2Box = new VBox();
+	
 		
+		Button btnCharacterName1 = new Button("Bonnie");
+		Button btnCharacterName2 = new Button("Clyde");
+		btnCharacterName1.setPadding(new Insets(0, 25, 15, 25));
+		btnCharacterName2.setPadding(new Insets(0, 25, 15, 25));
+		btnCharacterName1.setId("btnLabel");
+		btnCharacterName2.setId("btnLabel");
 		
-		Button Johnny = new Button();
-		Johnny.setId("btnJohnny");
-		Johnny.setPrefSize(60, 100);
+		Sprite spriteBonnie = new Sprite("bonnieSprite.png", 128, 128); 
+		Sprite spriteClyde = new Sprite("clydeSprite.png", 128, 128);
+		spriteBonnie.setFPS(5); // animation will play at 5 frames per second
+		spriteBonnie.play(); // animates the first row of the sprite sheet
+		spriteClyde.setFPS(5);
+		spriteClyde.play();
 		
-		Button Sarah = new Button();
-		Sarah.setPrefSize(60, 100);
-		Sarah.setId("btnSarah");
-		
-		Button btnJohnny = new Button("Johnny");
-		Button btnSarah = new Button("Sarah");
-		btnJohnny.setId("btnStyle1");
-		btnSarah.setId("btnStyle1");
-
-		JohnnyBox.getChildren().addAll(Johnny, btnJohnny);
-		SarahBox.getChildren().addAll(Sarah, btnSarah);
-		characterBox.getChildren().addAll(JohnnyBox, SarahBox);
+		character1Box.getChildren().addAll(spriteBonnie, btnCharacterName1);
+		character2Box.getChildren().addAll(spriteClyde, btnCharacterName2);
+		characterBox.getChildren().addAll(character1Box, character2Box);
 		characterBox.setAlignment(Pos.CENTER);
+	
 		menu.getChildren().addAll(label, characterBox);
 		
 		/* Set Margins */
-		VBox.setMargin(btnJohnny, new Insets(20, 0, 0, 0));
-		VBox.setMargin(btnSarah, new Insets(20, 0, 0, 0));
-		HBox.setMargin(JohnnyBox, new Insets(0, 50, 0, 0));
-		VBox.setMargin(label, new Insets(0, 0, 50, 0));
+		VBox.setMargin(btnCharacterName1, new Insets(20, 0, 0, 10));
+		VBox.setMargin(btnCharacterName2, new Insets(20, 0, 0, 20));
+		HBox.setMargin(character1Box, new Insets(0, 10, 0, 0));
+		VBox.setMargin(label, new Insets(-70, 0, 0, 0));
 
 		
-		btnJohnny.setOnAction(btnCharacterListener);
-		btnSarah.setOnAction(btnCharacterListener);
-		Johnny.setOnAction(btnCharacterListener);
-		Sarah.setOnAction(btnCharacterListener);
+		btnCharacterName1.setOnAction(btnCharacterListener);
+		btnCharacterName2.setOnAction(btnCharacterListener);
 		
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
@@ -314,10 +313,17 @@ public class CopMaze extends Application {
 		Button btnEasy = new Button("Easy");
 		Button btnHard = new Button("Hard");
 		Button btnSuperHard = new Button("Super Hard");
-
-		btnEasy.setId("btnStyle1");
-		btnHard.setId("btnStyle1");
-		btnSuperHard.setId("btnStyle1");
+		
+		btnEasy.setId("levelBtn");
+		btnHard.setId("levelBtn");
+		btnSuperHard.setId("levelBtn");
+		
+		btnEasy.setPrefSize(100, 40);
+		btnEasy.setPadding(new Insets(10, 25, 10, 25));
+		btnHard.setPrefSize(100, 40);
+		btnHard.setPadding(new Insets(10, 25, 10, 25));
+		btnSuperHard.setPrefSize(150, 40);
+		btnSuperHard.setPadding(new Insets(10, 25, 10, 25));
 
 		menu.getChildren().addAll(label, btnEasy, btnHard, btnSuperHard);
 
@@ -329,7 +335,7 @@ public class CopMaze extends Application {
 		root.setTop(getBackButtonBar());
 		
 		VBox.setMargin(btnHard, new Insets(20, 0, 20, 0));
-		VBox.setMargin(label, new Insets(0, 0, 50, 0));
+		VBox.setMargin(label, new Insets(-70, 0, 50, 0));
 	}
 	
 	/*
