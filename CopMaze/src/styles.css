@@ -1,14 +1,12 @@
+
 @font-face {
-    src: url(/resources/font/Chopsic.ttf);
+	src: url(/resources/font/depixelklein.otf);	
 }
 
 @font-face {
-	src: url(depixelklein.otf);	
+    src: url(/resources/font/PixelScript.otf);
 }
 
-@font-face {
-    src: url(/resources/font/MagicalStylishSansSerifDemo.otf);
-}
 
 #btnLabel{
 	-fx-background-image: url(/resources/image/buttonLabel.png);
@@ -55,18 +53,26 @@
 
 #btnForward{
 	-fx-background-color: transparent;
-	-fx-background-image: url(/resources/image/btnForward.png);
+	-fx-background-image: url(/resources/image/arrowRight.png);
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 	-fx-background-size: stretch;
 }
 
+#btnForward:hover{
+	-fx-background-image: url(/resources/image/arrowRightHover.png);
+}
+
 #btnBack{
 	-fx-background-color: transparent;
-	-fx-background-image: url(/resources/image/btnBack.png);
+	-fx-background-image: url(/resources/image/arrowLeft.png);
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 	-fx-background-size: stretch;
+}
+
+#btnBack:hover{
+	-fx-background-image: url(/resources/image/arrowLeftHover.png);
 }
 
 #BtnGoBack{
@@ -80,8 +86,8 @@
 }
 
 #Boxtxt {
-	-fx-font-family: 'Magical Stylish Sans Serif Demo';
-	-fx-font-size: 15;
+	-fx-font-family: 'Pixel Script';
+	-fx-font-size: 16;
 }
 
 #initScene {

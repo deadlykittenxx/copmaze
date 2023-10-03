@@ -188,18 +188,20 @@ public class CopMaze extends Application {
 	void updateRules(int step) {
 		btnRulePrevious.setVisible(true);
 		howToPlayStep = step;
-		if (howToPlayStep <= 7) {
+		if (howToPlayStep <= 2) {
 			txtRule.setText(contentOfRule[howToPlayStep]);
 			if (howToPlayStep == 0) {
 				btnRulePrevious.setVisible(false);
+				btnRuleNext.setVisible(true);
 			}
-			if (howToPlayStep < 4) {
+			if (howToPlayStep < 1) {
 				lblRule.setText("How to Play!");
-			} else if (howToPlayStep >= 4 && howToPlayStep < 7) {
+			} else if (howToPlayStep >= 1 && howToPlayStep < 2) {
 				lblRule.setText("Game Controls");
-			} else if (howToPlayStep == 7) {
+				btnRuleNext.setVisible(true);
+			} else if (howToPlayStep == 2) {
 				lblRule.setText("Be careful!");
-				btnRuleNext.setText("Play");
+				btnRuleNext.setVisible(false);
 			}
 
 		}
@@ -344,7 +346,7 @@ public class CopMaze extends Application {
 	
 	public void ruleGUI(BorderPane root) {
 		root.setId("ruleScene");
-		Image img = new Image("/resources/image/box02.png");
+		Image img = new Image("/resources/image/sketch.png");
 		
 		
 		VBox menu = new VBox(15);
@@ -353,23 +355,23 @@ public class CopMaze extends Application {
 		
 		lblRule = new Label("How to play!");
 		lblRule.setId("subTitle");
-		lblRule.setPadding(new Insets(0, 10, 10, 10));
-
-		Rectangle rectangle = new Rectangle(430, 300);
+		VBox.setMargin(lblRule, new Insets(-50, 0, 0, 0));
+		
+		Rectangle rectangle = new Rectangle(430, 250);
 		rectangle.setId("Box");
 		rectangle.setFill(new ImagePattern(img));
 		rectangle.setArcHeight(30);
 		rectangle.setArcWidth(30);
 		rectangle.setStroke(Color.TRANSPARENT);
 
-		contentOfRule[0] = "1. Move around the maze and collect all the gems.";
-		contentOfRule[1] = "2. You should avoid policmen while moving around.";
-		contentOfRule[2] = "3. When the key appears, go get it.";
-		contentOfRule[3] = "4. Drag the key and drop it to the door to unlock it.";
-		contentOfRule[4] = "1. Move around with keyborad arrows.";
-		contentOfRule[5] = "2. Put light on the camera to look further at night.";
-		contentOfRule[6] = "3. Smash the space bar to use Hide Mode.";
-		contentOfRule[7] = "You only have 2 days to steal the gems and escape!";
+		contentOfRule[0] = "1. Move around the maze and collect all the gems."
+				+"\n\n2. You should avoid policmen while moving around."
+				+"\n\n3. When the key appears, go get it."
+				+"\n\n4. Drag the key and drop it to the door to unlock it.";
+		contentOfRule[1] = "1. Move around with keyborad arrows."
+				+"\n\n2. Put light on the camera to look further at night."
+				+"\n\n3. Smash the space bar to use Hide Mode.";
+		contentOfRule[2] = "You only have 2 days \nto steal the gems and escape!";
 
 		txtRule = new Text();
 		txtRule.setId("Boxtxt");
@@ -379,23 +381,25 @@ public class CopMaze extends Application {
 		stack.setPadding(new Insets(0, 10, 0, 10));
 
 		btnRulePrevious = new Button();
-		btnRulePrevious.setPrefSize(60, 40);
+		btnRulePrevious.setPrefSize(40, 40);
 		btnRulePrevious.setId("btnBack");
 		btnRulePrevious.setOnAction(btnRulePreviousListener);
 
 		btnRuleNext = new Button("");
-		btnRuleNext.setPrefSize(60, 40);
+		btnRuleNext.setPrefSize(40, 40);
 		btnRuleNext.setId("btnForward");
 		btnRuleNext.setOnAction(btnRuleNextListener);
-		
 		HBox rulesScreen = new HBox();
-		rulesScreen.setAlignment(Pos.CENTER); // BOTTOM_CENTER
+		
+		rulesScreen.setAlignment(Pos.CENTER); 
 		rulesScreen.getChildren().addAll(btnRulePrevious, stack, btnRuleNext);
 
 		menu.getChildren().addAll(lblRule, rulesScreen);
 		
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
+		
+		
 		
 		updateRules(0); // Set screen 0
 
