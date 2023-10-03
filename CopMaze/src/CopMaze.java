@@ -6,11 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -18,7 +14,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -174,9 +169,8 @@ public class CopMaze extends Application {
 	 */
 	private Pane getBackButtonBar() {
 		AnchorPane topPane = new AnchorPane();
-		btnGoBack = new Button("◀ Main Menu");
+		btnGoBack = new Button("<");
 		btnGoBack.setOnAction(btnGoBackListener);
-		btnGoBack.setId("BtnGoBack");
 		topPane.getChildren().add(btnGoBack);
 		topPane.setPrefHeight(30);
 		AnchorPane.setTopAnchor(btnGoBack, 10.0);
@@ -192,6 +186,7 @@ public class CopMaze extends Application {
 		howToPlayStep = step;
 		if (howToPlayStep <= 7) {
 			txtRule.setText(contentOfRule[howToPlayStep]);
+			btnRuleNext.setText(">");
 			if (howToPlayStep == 0) {
 				btnRulePrevious.setVisible(false);
 			}
@@ -211,7 +206,6 @@ public class CopMaze extends Application {
 	 * Game Scene
 	 */
 	public void mazeGUI(VBox root) {
-		root.setId("mazeScene");
 		
 		Maze maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS);
 
@@ -253,48 +247,21 @@ public class CopMaze extends Application {
 	 */
 
 	public void characterGUI(BorderPane root) {
-		root.setId("characterScene");
-		VBox menu = new VBox();
+		VBox menu = new VBox(15);
 		menu.setAlignment(Pos.CENTER);
 		Label label = new Label("Choose Your Character!");
 		label.setId("subTitle");
-		
-		
-		HBox characterBox = new HBox();
-		VBox JohnnyBox = new VBox();
-		VBox SarahBox = new VBox();
-		
-		
-		Button Johnny = new Button();
-		Johnny.setId("btnJohnny");
-		Johnny.setPrefSize(60, 100);
-		
-		Button Sarah = new Button();
-		Sarah.setPrefSize(60, 100);
-		Sarah.setId("btnSarah");
-		
+		label.setPadding(new Insets(20, 50, 50, 50));
+
 		Button btnJohnny = new Button("Johnny");
 		Button btnSarah = new Button("Sarah");
 		btnJohnny.setId("btnStyle1");
 		btnSarah.setId("btnStyle1");
 
-		JohnnyBox.getChildren().addAll(Johnny, btnJohnny);
-		SarahBox.getChildren().addAll(Sarah, btnSarah);
-		characterBox.getChildren().addAll(JohnnyBox, SarahBox);
-		characterBox.setAlignment(Pos.CENTER);
-		menu.getChildren().addAll(label, characterBox);
-		
-		/* Set Margins */
-		VBox.setMargin(btnJohnny, new Insets(20, 0, 0, 0));
-		VBox.setMargin(btnSarah, new Insets(20, 0, 0, 0));
-		HBox.setMargin(JohnnyBox, new Insets(0, 50, 0, 0));
-		VBox.setMargin(label, new Insets(0, 0, 50, 0));
+		menu.getChildren().addAll(label, btnJohnny, btnSarah);
 
-		
 		btnJohnny.setOnAction(btnCharacterListener);
 		btnSarah.setOnAction(btnCharacterListener);
-		Johnny.setOnAction(btnCharacterListener);
-		Sarah.setOnAction(btnCharacterListener);
 		
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
@@ -305,11 +272,11 @@ public class CopMaze extends Application {
 	 */
 
 	public void levelGUI(BorderPane root) {
-		root.setId("levelScene");
-		VBox menu = new VBox();
+		VBox menu = new VBox(15);
 		menu.setAlignment(Pos.CENTER);
 		Label label = new Label("Choose Your Level!");
 		label.setId("subTitle");
+		label.setPadding(new Insets(20, 50, 50, 50));
 
 		Button btnEasy = new Button("Easy");
 		Button btnHard = new Button("Hard");
@@ -327,9 +294,6 @@ public class CopMaze extends Application {
 		
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
-		
-		VBox.setMargin(btnHard, new Insets(20, 0, 20, 0));
-		VBox.setMargin(label, new Insets(0, 0, 50, 0));
 	}
 	
 	/*
@@ -337,10 +301,6 @@ public class CopMaze extends Application {
 	 */
 	
 	public void ruleGUI(BorderPane root) {
-		root.setId("ruleScene");
-		Image img = new Image("/resources/image/box02.png");
-		
-		
 		VBox menu = new VBox(15);
 		menu.setAlignment(Pos.CENTER);
 		menu.setPadding(new Insets(15));
@@ -351,7 +311,6 @@ public class CopMaze extends Application {
 
 		Rectangle rectangle = new Rectangle(430, 300);
 		rectangle.setId("Box");
-		rectangle.setFill(new ImagePattern(img));
 		rectangle.setArcHeight(30);
 		rectangle.setArcWidth(30);
 		rectangle.setStroke(Color.TRANSPARENT);
@@ -372,14 +331,14 @@ public class CopMaze extends Application {
 		stack.getChildren().addAll(rectangle, txtRule);
 		stack.setPadding(new Insets(0, 10, 0, 10));
 
-		btnRulePrevious = new Button();
+		btnRulePrevious = new Button("<");
 		btnRulePrevious.setPrefSize(60, 40);
-		btnRulePrevious.setId("btnBack");
+		btnRulePrevious.setId("btnStyle2");
 		btnRulePrevious.setOnAction(btnRulePreviousListener);
 
-		btnRuleNext = new Button("");
+		btnRuleNext = new Button(">");
 		btnRuleNext.setPrefSize(60, 40);
-		btnRuleNext.setId("btnForward");
+		btnRuleNext.setId("btnStyle2");
 		btnRuleNext.setOnAction(btnRuleNextListener);
 		
 		HBox rulesScreen = new HBox();

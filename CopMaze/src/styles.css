@@ -1,10 +1,4 @@
-@font-face {
-    src: url(/resources/font/Chopsic.ttf);
-}
 
-@font-face {
-    src: url(/resources/font/MagicalStylishSansSerifDemo.otf);
-}
 
 .button
 {
@@ -23,81 +17,55 @@
 
 }
 
+.text {
+}
 
 #btnStyle1 {
 	-fx-background-color: transparent;
-	-fx-background-image: url(/resources/image/button02.png);
+	-fx-background-image: url(/resources/image/buttonGray.png);
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 	-fx-background-size: stretch;
 	-fx-font-size: 15;
-	-fx-font-family: 'Magical Stylish Sans Serif Demo';
+	-fx-font-family: 'Quicksand';
 }
 
+#btnStyle2 {
+	-fx-font-size: 15;
+}
 
 #mainTitle {
-	-fx-font-size: 70;
-	-fx-font-family: 'Chopsic';
-	-fx-text-fill: white;
-	-fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.7), 10, 0.5, 0.0, 0.0);
+	-fx-font-size: 50;
+	-fx-font-family: 'Citylines';
+	-fx-text-fill: black;
 }
 
 #subTitle {
-	-fx-font-family: 'Chopsic';
-	-fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 10, 0.5, 0.0, 0.0);
-	-fx-text-fill: white;
 	-fx-font-size: 30;
 	
 }
 
-#btnForward{
-	-fx-background-color: transparent;
-	-fx-background-image: url(/resources/image/btnForward.png);
-	-fx-background-repeat: no-repeat;
-	-fx-background-position: center;
-	-fx-background-size: stretch;
-}
-
-#btnBack{
-	-fx-background-color: transparent;
-	-fx-background-image: url(/resources/image/btnBack.png);
-	-fx-background-repeat: no-repeat;
-	-fx-background-position: center;
-	-fx-background-size: stretch;
-}
-
-#BtnGoBack{
-	-fx-background-color: transparent;
-	-fx-text-fill: white;
-	-fx-font-family: 'Magical Stylish Sans Serif Demo';
+#Box {
+	-fx-fill: #C5DFF8;
+	-fx-opacity: 0.5;
+	-fx-effect: dropshadow(three-pass-box, rgba(0.0,0.0,0.0,0.2), 3.0, 0.0, 0.0, 0.7);
 }
 
 #Boxtxt {
-	-fx-font-family: 'Magical Stylish Sans Serif Demo';
 	-fx-font-size: 15;
 }
 
-#initScene, #ruleScene, #characterScene, #levelScene, #mazeScene{
-	-fx-background-image: url(/resources/image/background.png);
+#initScene{
+	-fx-background-image: url(/resources/image/main.jpg);
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
 	-fx-background-size: cover;
 }
 
-#btnJohnny{
-	-fx-background-color: transparent;
-	-fx-background-image: url(/resources/image/Johnny.png);
-	-fx-background-repeat: no-repeat;
-	-fx-background-position: center;
-	-fx-background-size: stretch;
+@font-face {
+    src: url(/resources/font/Citylines.otf);
 }
 
-#btnSarah{
-	-fx-background-color: transparent;
-	-fx-background-image: url(/resources/image/Sarah.png);
-	-fx-background-repeat: no-repeat;
-	-fx-background-position: center;
-	-fx-background-size: stretch;
+@font-face {
+    src: url(/resources/font/Quicksand.ttf);
 }
-
-
