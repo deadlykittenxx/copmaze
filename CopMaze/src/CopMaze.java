@@ -8,7 +8,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -44,6 +45,7 @@ public class CopMaze extends Application {
 	private EventHandler<ActionEvent> btnRuleNextListener;
 	private EventHandler<ActionEvent> btnRulePreviousListener;
 	private EventHandler<ActionEvent> btnGoBackListener;
+	private EventHandler<KeyEvent> characterListener;
 	private Button btnGoBack;
 	private Button btnRuleNext;
 	private Button btnRulePrevious;
@@ -51,7 +53,10 @@ public class CopMaze extends Application {
 	private String[] contentOfRule = new String[8];
 	private Text txtRule;
 	private int howToPlayStep = 0;
-	private Character player;
+	public Character player;
+	public Button character;
+	
+	public Maze maze;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -72,9 +77,9 @@ public class CopMaze extends Application {
 		BorderPane ruleRoot = new BorderPane();
 		ruleScene = new Scene(ruleRoot);
 		
-		VBox mazeRoot = new VBox();
+		Pane mazeRoot = new Pane();
 		mazeScene = new Scene(mazeRoot);
-		mazeRoot.setAlignment(Pos.CENTER);
+		//mazeRoot.setAlignment(Pos.CENTER);
 
 		initListener(primaryStage);
 
@@ -103,6 +108,39 @@ public class CopMaze extends Application {
 	 * Initialize the listeners
 	 */
 	public void initListener(Stage stage) {
+		
+		characterListener = new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent e) {
+				if(e.getCode().equals(KeyCode.RIGHT)) {
+					if(maze.hasRightWall(player.currentLocation.x, player.currentLocation.y)) {
+						
+					} else {
+						character.setLayoutX(character.getLayoutX()+20);
+						player.currentLocation.x += 1;
+					}
+				} else if(e.getCode().equals(KeyCode.LEFT)) {
+					if(maze.hasLeftWall(player.currentLocation.x, player.currentLocation.y)) {
+					} else {
+						character.setLayoutX(character.getLayoutX()-20);
+						player.currentLocation.x -= 1;
+					}
+				} else if(e.getCode().equals(KeyCode.UP)) {
+					if(maze.hasTopWall(player.currentLocation.x, player.currentLocation.y)) {
+					} else {
+						character.setLayoutY(character.getLayoutY()-20);
+						player.currentLocation.y -= 1;
+					}
+				} else if(e.getCode().equals(KeyCode.DOWN)) {
+					if(maze.hasBottomWall(player.currentLocation.x, player.currentLocation.y)) {
+					} else {
+						character.setLayoutY(character.getLayoutY()+20);
+						player.currentLocation.y += 1;
+					}
+				}
+			}
+		};
+		
 		btnLevelListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
@@ -210,16 +248,20 @@ public class CopMaze extends Application {
 	/*
 	 * Game Scene
 	 */
-	public void mazeGUI(VBox root) {
+	public void mazeGUI(Pane root) {
 		root.setId("mazeScene");
 		
-		
-		Maze maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS);
+		maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS);
 
 		Canvas canvas = new Canvas(MAZE_WIDTH * GRID_SIZE + BORDER_SIZE, MAZE_HEIGHT * GRID_SIZE + BORDER_SIZE);
 		maze.draw(canvas.getGraphicsContext2D(), GRID_SIZE, BORDER_SIZE);
 
+		character = new Button("◍");
+		character.setOnKeyPressed(characterListener);
+		
+		
 		root.getChildren().add(canvas);
+		root.getChildren().add(character);
 		
 		
 	}
