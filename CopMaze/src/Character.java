@@ -1,8 +1,11 @@
+import javafx.scene.control.Button;
+
 public class Character {
 	String name;
 	int HP;
 	int gems;
 	boolean key;
+	
 	
 	public class Coordinate{
 		int x;
