@@ -260,6 +260,7 @@ public class CopMaze extends Application {
 		character.setOnKeyPressed(characterListener);
 		
 		
+		
 		root.getChildren().add(canvas);
 		root.getChildren().add(character);
 		

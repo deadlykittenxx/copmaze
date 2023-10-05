@@ -18,7 +18,6 @@ public class Character {
 		key = false;
 		currentLocation.x = 0;
 		currentLocation.y = 0;
-		
 	}
 }
 
