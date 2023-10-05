@@ -222,7 +222,7 @@ public class Maze {
     
 	public void draw(GraphicsContext gc, double cellSizePx, double lineWidthPx) {
 		gc.setFill(Color.WHITE);
-		gc.fillRect(0, 0, cellSizePx*getWidth(), cellSizePx*getHeight());
+		gc.fillRect(0, 0, cellSizePx*getWidth() + lineWidthPx, cellSizePx*getHeight() + lineWidthPx);
 		gc.setFill(Color.BLACK);
 
 		for (int y = 0; y < getHeight(); y++) {
