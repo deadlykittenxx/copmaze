@@ -27,9 +27,9 @@ public class CopMaze extends Application {
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
 
-	private static final int MAZE_WIDTH = 20; // Number of cells
-	private static final int MAZE_HEIGHT = 15; // Number of cells
-	private static final int GRID_SIZE = 20; // Number of pixels per cell
+	public static final int MAZE_WIDTH = 20; // Number of cells
+	public static final int MAZE_HEIGHT = 15; // Number of cells
+	public static final int GRID_SIZE = 25; // Number of pixels per cell
 	private static final int BORDER_SIZE = 2;
 	private static final double EASINESS = 0.2;  // Number from 0 to 1, 1 remove all the walls
 
@@ -109,6 +109,9 @@ public class CopMaze extends Application {
 	 */
 	public void initListener(Stage stage) {
 		
+		/*
+		 *	Character moving
+		 * */
 		characterListener = new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent e) {
@@ -116,25 +119,25 @@ public class CopMaze extends Application {
 					if(maze.hasRightWall(player.currentLocation.x, player.currentLocation.y)) {
 						
 					} else {
-						character.setLayoutX(character.getLayoutX()+20);
+						character.setLayoutX(character.getLayoutX()+GRID_SIZE);
 						player.currentLocation.x += 1;
 					}
 				} else if(e.getCode().equals(KeyCode.LEFT)) {
 					if(maze.hasLeftWall(player.currentLocation.x, player.currentLocation.y)) {
 					} else {
-						character.setLayoutX(character.getLayoutX()-20);
+						character.setLayoutX(character.getLayoutX()-GRID_SIZE);
 						player.currentLocation.x -= 1;
 					}
 				} else if(e.getCode().equals(KeyCode.UP)) {
 					if(maze.hasTopWall(player.currentLocation.x, player.currentLocation.y)) {
 					} else {
-						character.setLayoutY(character.getLayoutY()-20);
+						character.setLayoutY(character.getLayoutY()-GRID_SIZE);
 						player.currentLocation.y -= 1;
 					}
 				} else if(e.getCode().equals(KeyCode.DOWN)) {
 					if(maze.hasBottomWall(player.currentLocation.x, player.currentLocation.y)) {
 					} else {
-						character.setLayoutY(character.getLayoutY()+20);
+						character.setLayoutY(character.getLayoutY()+GRID_SIZE);
 						player.currentLocation.y += 1;
 					}
 				}
@@ -257,13 +260,23 @@ public class CopMaze extends Application {
 		maze.draw(canvas.getGraphicsContext2D(), GRID_SIZE, BORDER_SIZE);
 
 		character = new Button("◍");
+		character.setPrefHeight(GRID_SIZE);
+		character.setPrefWidth(GRID_SIZE);
 		character.setOnKeyPressed(characterListener);
 		
+		Gems gem[] = new Gems[3];
+		gem[0] = new Gems("/resources/image/gem01.png", GRID_SIZE, GRID_SIZE);
+		gem[1] = new Gems("/resources/image/gem02.png", GRID_SIZE, GRID_SIZE);
+		gem[2] = new Gems("/resources/image/gem03.png", GRID_SIZE, GRID_SIZE);
+		root.getChildren().addAll(canvas, character, gem[0].gemImage, gem[1].gemImage, gem[2].gemImage);
 		
 		
 		root.getChildren().add(canvas);
 		root.getChildren().add(character);
 		
+		gem[0].draw();
+		gem[1].draw();
+		gem[2].draw();
 		
 	}
 	
