@@ -264,10 +264,10 @@ public class CopMaze extends Application {
 		character.setPrefWidth(GRID_SIZE);
 		character.setOnKeyPressed(characterListener);
 		
-		Gems gem[] = new Gems[3];
-		gem[0] = new Gems("/resources/image/gem01.png", GRID_SIZE, GRID_SIZE);
-		gem[1] = new Gems("/resources/image/gem02.png", GRID_SIZE, GRID_SIZE);
-		gem[2] = new Gems("/resources/image/gem03.png", GRID_SIZE, GRID_SIZE);
+		Gem gem[] = new Gem[3];
+		gem[0] = new Gem("/resources/image/gem01.png", GRID_SIZE, GRID_SIZE);
+		gem[1] = new Gem("/resources/image/gem02.png", GRID_SIZE, GRID_SIZE);
+		gem[2] = new Gem("/resources/image/gem03.png", GRID_SIZE, GRID_SIZE);
 		root.getChildren().addAll(canvas, character, gem[0].gemImage, gem[1].gemImage, gem[2].gemImage);
 		
 		

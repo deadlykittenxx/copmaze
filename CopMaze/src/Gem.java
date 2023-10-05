@@ -4,7 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
-public class Gems {
+public class Gem {
 	Random rand = new Random();
 	int width;
 	int height;
@@ -20,7 +20,7 @@ public class Gems {
 	Coordinate currentLocation = new Coordinate();
 	
 	// rand.nextInt(30) 0 ~ 29
-	public Gems(String url, int w, int h) {
+	public Gem(String url, int w, int h) {
 		currentLocation.x = rand.nextInt(CopMaze.MAZE_WIDTH);
 		currentLocation.y = rand.nextInt(CopMaze.MAZE_HEIGHT);
 		
