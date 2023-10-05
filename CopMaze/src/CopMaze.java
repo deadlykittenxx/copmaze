@@ -271,9 +271,6 @@ public class CopMaze extends Application {
 		root.getChildren().addAll(canvas, character, gem[0].gemImage, gem[1].gemImage, gem[2].gemImage);
 		
 		
-		root.getChildren().add(canvas);
-		root.getChildren().add(character);
-		
 		gem[0].draw();
 		gem[1].draw();
 		gem[2].draw();

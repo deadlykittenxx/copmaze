@@ -246,7 +246,8 @@ public class Maze {
 			}
 		}
 	}
-
+	
+	// For debugging
     public String toString() {
         String s = "";
         for (int j = 0; j < getHeight(); j++) {
