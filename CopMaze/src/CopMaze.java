@@ -4,7 +4,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -255,9 +254,7 @@ public class CopMaze extends Application {
 		root.setId("mazeScene");
 		
 		maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS);
-
-		Canvas canvas = new Canvas(MAZE_WIDTH * GRID_SIZE + BORDER_SIZE, MAZE_HEIGHT * GRID_SIZE + BORDER_SIZE);
-		maze.draw(canvas.getGraphicsContext2D(), GRID_SIZE, BORDER_SIZE);
+		MazeNode mazeNode = new MazeNode(maze, GRID_SIZE, BORDER_SIZE);
 
 		character = new Button("◍");
 		character.setPrefHeight(GRID_SIZE);
@@ -268,7 +265,7 @@ public class CopMaze extends Application {
 		gem[0] = new Gem("/resources/image/gem01.png", GRID_SIZE, GRID_SIZE);
 		gem[1] = new Gem("/resources/image/gem02.png", GRID_SIZE, GRID_SIZE);
 		gem[2] = new Gem("/resources/image/gem03.png", GRID_SIZE, GRID_SIZE);
-		root.getChildren().addAll(canvas, character, gem[0].gemImage, gem[1].gemImage, gem[2].gemImage);
+		root.getChildren().addAll(mazeNode, character, gem[0].gemImage, gem[1].gemImage, gem[2].gemImage);
 		
 		
 		gem[0].draw();
