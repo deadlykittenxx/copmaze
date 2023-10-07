@@ -28,7 +28,7 @@ public class Maze {
     static final int BOTTOM = 2;
     static final int LEFT = 1;
 
-    private static int[][] maze;
+    private int[][] maze;
 
     public Maze(int width, int height, double easiness) {
         generate(width, height);
