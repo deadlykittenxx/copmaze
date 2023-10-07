@@ -253,7 +253,7 @@ public class CopMaze extends Application {
 	public void mazeGUI(Pane root) {
 		root.setId("mazeScene");
 		
-		maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS);
+		maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS, 3);
 		MazeNode mazeNode = new MazeNode(maze, GRID_SIZE, BORDER_SIZE);
 
 		character = new Button("◍");
@@ -261,17 +261,7 @@ public class CopMaze extends Application {
 		character.setPrefWidth(GRID_SIZE);
 		character.setOnKeyPressed(characterListener);
 		
-		Gem gem[] = new Gem[3];
-		gem[0] = new Gem("/resources/image/gem01.png", GRID_SIZE, GRID_SIZE);
-		gem[1] = new Gem("/resources/image/gem02.png", GRID_SIZE, GRID_SIZE);
-		gem[2] = new Gem("/resources/image/gem03.png", GRID_SIZE, GRID_SIZE);
-		root.getChildren().addAll(mazeNode, character, gem[0].gemImage, gem[1].gemImage, gem[2].gemImage);
-		
-		
-		gem[0].draw();
-		gem[1].draw();
-		gem[2].draw();
-		
+		root.getChildren().addAll(mazeNode, character);
 	}
 	
 	/*

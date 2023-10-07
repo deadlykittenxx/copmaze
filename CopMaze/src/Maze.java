@@ -1,15 +1,22 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
 class Coordinate {
     public int x;
     public int y;
     Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+}
+
+class GemInformation {
+    public Coordinate c;
+    public int id;
+
+    GemInformation(Coordinate c, int id) {
+        this.c = c;
+        this.id = id;
     }
 }
 
@@ -23,17 +30,21 @@ class Wall {
 }
 
 public class Maze {
-    static final int TOP = 8;
-    static final int RIGHT = 4;
-    static final int BOTTOM = 2;
     static final int LEFT = 1;
+    static final int BOTTOM = 2;
+    static final int RIGHT = 4;
+    static final int TOP = 8;
+    static final int GEM = 16;
+
 
     private int[][] maze;
+    private GemInformation[] initialGemsInformation;
 
-    public Maze(int width, int height, double easiness) {
+    public Maze(int width, int height, double easiness, int nbGems) {
         generate(width, height);
         makeMazeEasier(easiness);
         addExit();
+        addGems(nbGems);
     }
 
     public int getWidth() {
@@ -218,6 +229,36 @@ public class Maze {
         } else { // Right
             maze[c.x][c.y] |= RIGHT;
         }
+    }
+
+    private void addGems(int nbGems) {
+        GemInformation[] gemsInformation = new GemInformation[nbGems];
+        int i = 0;
+        while (i < nbGems) {
+            int x = (int) (Math.random() * getWidth());
+            int y = (int) (Math.random() * getHeight());
+            
+            if ((maze[x][y] & GEM) == 0) {
+                maze[x][y] |= GEM;
+                gemsInformation[i] = new GemInformation(new Coordinate(x, y), i);
+                i++;
+            }
+        }
+        initialGemsInformation = gemsInformation;
+    }
+
+    public Iterable<GemInformation> getGemsInformation() {
+        ArrayList<GemInformation> gemsInformation = new ArrayList<GemInformation>();
+        for (GemInformation gi : initialGemsInformation) {
+            if ((maze[gi.c.x][gi.c.y] & GEM) != 0) {
+                gemsInformation.add(gi);
+            }
+        }
+        return gemsInformation;
+    }
+
+    public void removeGem(int x, int y) {
+        maze[x][y] &= ~GEM;
     }
 	
 	// For debugging

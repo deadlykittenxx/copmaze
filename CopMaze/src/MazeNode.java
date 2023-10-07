@@ -4,16 +4,24 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class MazeNode extends Canvas {
     private Maze maze;
-    private Canvas canvas;
     private double cellSizePx;
     private double lineWidthPx;
+    private GemNode[] gemNodes;
 
     public MazeNode(Maze maze, double cellSizePx, double lineWidthPx) {
         super(maze.getWidth() * cellSizePx + lineWidthPx, maze.getHeight() * cellSizePx + lineWidthPx);
         this.maze = maze;
         this.cellSizePx = cellSizePx;
         this.lineWidthPx = lineWidthPx;
+        generateGemNodes();
         draw();
+    }
+
+    private void generateGemNodes() {
+        gemNodes = new GemNode[GemNode.NB_GEM_TYPES];
+        for (int i = 0; i < GemNode.NB_GEM_TYPES; i++) {
+            gemNodes[i] = new GemNode(i, (int)cellSizePx, (int)cellSizePx);
+        }
     }
 
     public Maze getMaze() {
@@ -46,5 +54,9 @@ public class MazeNode extends Canvas {
                 }
 			}
 		}
+
+        for (GemInformation gi : maze.getGemsInformation()) {
+            gc.drawImage(gemNodes[gi.id % gemNodes.length], gi.c.x * cellSizePx, gi.c.y * cellSizePx);
+        }
 	}
 }
