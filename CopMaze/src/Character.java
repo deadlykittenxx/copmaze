@@ -1,26 +1,18 @@
-import javafx.scene.control.Button;
-
 public class Character {
 	String name;
-	int HP;
-	int gems;
-	boolean key;
+	int spriteId;
+	int healthPoints;
+	int nbOwnedGems;
+	boolean hasKey;
+	Coordinate currentLocation;
 	
-	
-	public class Coordinate{
-		int x;
-		int y;
-	}
-	
-	Coordinate currentLocation = new Coordinate();
-	
-	public Character(String name) {
+	public Character(String name, int spriteId) {
 		this.name = name;
-		HP = 3;
-		gems = 0;
-		key = false;
-		currentLocation.x = 0;
-		currentLocation.y = 0;
+		this.spriteId = spriteId;
+		healthPoints = 3;
+		nbOwnedGems = 0;
+		hasKey = false;
+		currentLocation = new Coordinate(0, 0);
 	}
 }
 

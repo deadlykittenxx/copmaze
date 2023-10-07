@@ -26,17 +26,26 @@ public class CopMaze extends Application {
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
 
-	public static final int MAZE_WIDTH = 20; // Number of cells
-	public static final int MAZE_HEIGHT = 15; // Number of cells
 	public static final int GRID_SIZE = 25; // Number of pixels per cell
 	private static final int BORDER_SIZE = 2;
-	private static final double EASINESS = 0.2;  // Number from 0 to 1, 1 remove all the walls
+
+	private static final CharacterInfo[] CHARACTERS_INFO = new CharacterInfo[] {
+		new CharacterInfo("Bonnie", 0),
+		new CharacterInfo("Clyde", 1)
+	};
+
+	private static final DifficultyLevel[] DIFFICULTY_LEVELS = new DifficultyLevel[] {
+		new DifficultyLevel("Easy", 3, 1, 2, 18, 14, 0.3, 100),
+		new DifficultyLevel("Hard", 5, 2, 2, 20, 15, 0.2, 100),
+		new DifficultyLevel("Super Hard", 7, 3, 2, 22, 16, 0.1, 150)
+	};
 
 	private Scene initScene;
 	private Scene characterScene;
 	private Scene levelScene;
 	private Scene mazeScene;
 	private Scene ruleScene;
+	private Pane mazeRoot;
 	private EventHandler<ActionEvent> btnStartListener;
 	private EventHandler<ActionEvent> btnHowtoPlayListener;
 	private EventHandler<ActionEvent> btnCharacterListener;
@@ -52,8 +61,8 @@ public class CopMaze extends Application {
 	private String[] contentOfRule = new String[8];
 	private Text txtRule;
 	private int howToPlayStep = 0;
-	public Character player;
-	public Button character;
+	private Character player;
+	private DifficultyLevel difficultyLevel;
 	
 	public Maze maze;
 
@@ -76,7 +85,7 @@ public class CopMaze extends Application {
 		BorderPane ruleRoot = new BorderPane();
 		ruleScene = new Scene(ruleRoot);
 		
-		Pane mazeRoot = new Pane();
+		mazeRoot = new Pane();
 		mazeScene = new Scene(mazeRoot);
 		//mazeRoot.setAlignment(Pos.CENTER);
 
@@ -85,7 +94,6 @@ public class CopMaze extends Application {
 		initGUI(initRoot);
 		characterGUI(characterRoot);
 		levelGUI(levelRoot);
-		mazeGUI(mazeRoot);
 		ruleGUI(ruleRoot);
 
 		String css = this.getClass().getResource("styles.css").toExternalForm();
@@ -114,31 +122,14 @@ public class CopMaze extends Application {
 		characterListener = new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent e) {
-				if(e.getCode().equals(KeyCode.RIGHT)) {
-					if(maze.hasRightWall(player.currentLocation.x, player.currentLocation.y)) {
-						
-					} else {
-						character.setLayoutX(character.getLayoutX()+GRID_SIZE);
-						player.currentLocation.x += 1;
-					}
-				} else if(e.getCode().equals(KeyCode.LEFT)) {
-					if(maze.hasLeftWall(player.currentLocation.x, player.currentLocation.y)) {
-					} else {
-						character.setLayoutX(character.getLayoutX()-GRID_SIZE);
-						player.currentLocation.x -= 1;
-					}
+				if (e.getCode().equals(KeyCode.RIGHT)) {
+					maze.moveCharacterRight();
+				} else if (e.getCode().equals(KeyCode.LEFT)) {
+					maze.moveCharacterLeft();
 				} else if(e.getCode().equals(KeyCode.UP)) {
-					if(maze.hasTopWall(player.currentLocation.x, player.currentLocation.y)) {
-					} else {
-						character.setLayoutY(character.getLayoutY()-GRID_SIZE);
-						player.currentLocation.y -= 1;
-					}
+					maze.moveCharacterUp();
 				} else if(e.getCode().equals(KeyCode.DOWN)) {
-					if(maze.hasBottomWall(player.currentLocation.x, player.currentLocation.y)) {
-					} else {
-						character.setLayoutY(character.getLayoutY()+GRID_SIZE);
-						player.currentLocation.y += 1;
-					}
+					maze.moveCharacterDown();
 				}
 			}
 		};
@@ -146,6 +137,9 @@ public class CopMaze extends Application {
 		btnLevelListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
+				Button btn = (Button) arg0.getSource();
+				difficultyLevel = (DifficultyLevel) btn.getUserData();
+				mazeGUI(mazeRoot);
 				stage.setScene(mazeScene);
 			}
 		};
@@ -164,7 +158,8 @@ public class CopMaze extends Application {
 				 * Create new Character
 				 */
 				Button btn = (Button) event.getSource();
-				player = new Character(btn.getText());
+				CharacterInfo ci = (CharacterInfo) btn.getUserData();
+				player = new Character(ci.name, ci.sprite_id);
 				stage.setScene(levelScene);
 			}
 		};
@@ -253,15 +248,12 @@ public class CopMaze extends Application {
 	public void mazeGUI(Pane root) {
 		root.setId("mazeScene");
 		
-		maze = new Maze(MAZE_WIDTH, MAZE_HEIGHT, EASINESS, 3);
+		maze = new Maze(difficultyLevel.mazeWidth, difficultyLevel.mazeHeight, difficultyLevel.easiness, player, difficultyLevel.nbGems);
 		MazeNode mazeNode = new MazeNode(maze, GRID_SIZE, BORDER_SIZE);
 
-		character = new Button("◍");
-		character.setPrefHeight(GRID_SIZE);
-		character.setPrefWidth(GRID_SIZE);
-		character.setOnKeyPressed(characterListener);
+		mazeScene.setOnKeyPressed(characterListener);
 		
-		root.getChildren().addAll(mazeNode, character);
+		root.getChildren().addAll(mazeNode);
 	}
 	
 	/*
@@ -301,41 +293,32 @@ public class CopMaze extends Application {
 		label.setId("subTitle");
 		
 		
-		HBox characterBox = new HBox();
-		VBox character1Box = new VBox();
-		VBox character2Box = new VBox();
+		HBox charactersPanelBox = new HBox();
+
+		for (CharacterInfo ci : CHARACTERS_INFO) {
+			VBox characterBox = new VBox();
+
+			Button btnCharacterName = new Button(ci.name);
+			btnCharacterName.setUserData(ci);
+			btnCharacterName.setPadding(new Insets(0, 25, 15, 25));
+			VBox.setMargin(btnCharacterName, new Insets(20, 0, 0, 10));
+			btnCharacterName.setId("btnLabel");
+			btnCharacterName.setOnAction(btnCharacterListener);
+
+			CharacterNode sprite = new CharacterNode(ci.sprite_id, 128, 128);
+
+			characterBox.setAlignment(Pos.CENTER);
+			characterBox.getChildren().addAll(sprite, btnCharacterName);
+			HBox.setMargin(characterBox, new Insets(0, 10, 0, 0));
+			charactersPanelBox.getChildren().add(characterBox);
+		}
+		
+		charactersPanelBox.setAlignment(Pos.CENTER);
 	
-		
-		Button btnCharacterName1 = new Button("Bonnie");
-		Button btnCharacterName2 = new Button("Clyde");
-		btnCharacterName1.setPadding(new Insets(0, 25, 15, 25));
-		btnCharacterName2.setPadding(new Insets(0, 25, 15, 25));
-		btnCharacterName1.setId("btnLabel");
-		btnCharacterName2.setId("btnLabel");
-		
-		Sprite spriteBonnie = new Sprite("bonnieSprite.png", 128, 128); 
-		Sprite spriteClyde = new Sprite("clydeSprite.png", 128, 128);
-		spriteBonnie.setFPS(5); // animation will play at 5 frames per second
-		spriteBonnie.play(); // animates the first row of the sprite sheet
-		spriteClyde.setFPS(5);
-		spriteClyde.play();
-		
-		character1Box.getChildren().addAll(spriteBonnie, btnCharacterName1);
-		character2Box.getChildren().addAll(spriteClyde, btnCharacterName2);
-		characterBox.getChildren().addAll(character1Box, character2Box);
-		characterBox.setAlignment(Pos.CENTER);
-	
-		menu.getChildren().addAll(label, characterBox);
+		menu.getChildren().addAll(label, charactersPanelBox);
 		
 		/* Set Margins */
-		VBox.setMargin(btnCharacterName1, new Insets(20, 0, 0, 10));
-		VBox.setMargin(btnCharacterName2, new Insets(20, 0, 0, 20));
-		HBox.setMargin(character1Box, new Insets(0, 10, 0, 0));
 		VBox.setMargin(label, new Insets(-70, 0, 0, 0));
-
-		
-		btnCharacterName1.setOnAction(btnCharacterListener);
-		btnCharacterName2.setOnAction(btnCharacterListener);
 		
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
@@ -351,33 +334,22 @@ public class CopMaze extends Application {
 		menu.setAlignment(Pos.CENTER);
 		Label label = new Label("Choose Your Level!");
 		label.setId("subTitle");
+		VBox.setMargin(label, new Insets(-70, 0, 50, 0));
 
-		Button btnEasy = new Button("Easy");
-		Button btnHard = new Button("Hard");
-		Button btnSuperHard = new Button("Super Hard");
-		
-		btnEasy.setId("levelBtn");
-		btnHard.setId("levelBtn");
-		btnSuperHard.setId("levelBtn");
-		
-		btnEasy.setPrefSize(100, 40);
-		btnEasy.setPadding(new Insets(10, 25, 10, 25));
-		btnHard.setPrefSize(100, 40);
-		btnHard.setPadding(new Insets(10, 25, 10, 25));
-		btnSuperHard.setPrefSize(150, 40);
-		btnSuperHard.setPadding(new Insets(10, 25, 10, 25));
+		menu.getChildren().add(label);
 
-		menu.getChildren().addAll(label, btnEasy, btnHard, btnSuperHard);
-
-		btnEasy.setOnAction(btnLevelListener);
-		btnHard.setOnAction(btnLevelListener);
-		btnSuperHard.setOnAction(btnLevelListener);
+		for (DifficultyLevel dl : DIFFICULTY_LEVELS) {
+			Button btnLevel = new Button(dl.name);
+			btnLevel.setUserData(dl);
+			btnLevel.setPrefSize(dl.buttonWidth, 40);
+			btnLevel.setPadding(new Insets(10, 25, 10, 25));
+			btnLevel.setId("levelBtn");
+			btnLevel.setOnAction(btnLevelListener);
+			menu.getChildren().add(btnLevel);
+		}
 		
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
-		
-		VBox.setMargin(btnHard, new Insets(20, 0, 20, 0));
-		VBox.setMargin(label, new Insets(-70, 0, 50, 0));
 	}
 	
 	/*
@@ -445,4 +417,36 @@ public class CopMaze extends Application {
 
 	}
 
+}
+
+class CharacterInfo {
+	public String name;
+	public int sprite_id;
+
+	public CharacterInfo(String name, int sprite_id) {
+		this.name = name;
+		this.sprite_id = sprite_id;
+	}
+}
+
+class DifficultyLevel {
+	public String name;
+	public int nbGems;
+	public int nbPolice;
+	public int nbDays;
+	public int mazeWidth;
+	public int mazeHeight;
+	public double easiness;
+	public int buttonWidth;
+
+	public DifficultyLevel(String name, int nbGems, int nbPolice, int nbDays, int mazeWidth, int mazeHeight, double easiness, int buttonWidth) {
+		this.name = name;
+		this.nbGems = nbGems;
+		this.nbPolice = nbPolice;
+		this.nbDays = nbDays;
+		this.mazeWidth = mazeWidth;
+		this.mazeHeight = mazeHeight;
+		this.easiness = easiness;
+		this.buttonWidth = buttonWidth;
+	}
 }

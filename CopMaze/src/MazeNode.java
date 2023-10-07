@@ -1,27 +1,85 @@
 import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.GraphicsContext;
 
-public class MazeNode extends Canvas {
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
+class MazeItemProperties {
+    IntegerProperty x;
+    IntegerProperty y;
+
+    public MazeItemProperties(int x, int y) {
+        this.x = new SimpleIntegerProperty(x);
+        this.y = new SimpleIntegerProperty(y);
+    }
+}
+
+public class MazeNode extends Pane {
     private Maze maze;
     private double cellSizePx;
     private double lineWidthPx;
+    private double cellContentPx;
     private GemNode[] gemNodes;
+    private CharacterNode characterNode;
+    private Canvas canvas;
+    private Pane mazeContentPane;
 
     public MazeNode(Maze maze, double cellSizePx, double lineWidthPx) {
-        super(maze.getWidth() * cellSizePx + lineWidthPx, maze.getHeight() * cellSizePx + lineWidthPx);
+        this.canvas = new Canvas(maze.getWidth() * cellSizePx + lineWidthPx, maze.getHeight() * cellSizePx + lineWidthPx);
+        mazeContentPane = new Pane();
         this.maze = maze;
         this.cellSizePx = cellSizePx;
         this.lineWidthPx = lineWidthPx;
+        this.cellContentPx = cellSizePx - lineWidthPx;
+        generateCharacterNode();
         generateGemNodes();
         draw();
+        this.getChildren().addAll(canvas, mazeContentPane);
+        this.maze.setOnChangeCallback(() -> {
+            update();
+        });
+    }
+
+    private void generateCharacterNode() {
+        Character character = maze.getCharacter();
+        characterNode = new CharacterNode(character.spriteId, (int)cellContentPx, (int)cellContentPx);
+        characterNode.setX(character.currentLocation.x * cellSizePx + lineWidthPx);
+        characterNode.setY(character.currentLocation.y * cellSizePx + lineWidthPx);
+        mazeContentPane.getChildren().add(characterNode);
+    }
+
+    public void updateCharacterNode() {
+        Character character = maze.getCharacter();
+        characterNode.setX(character.currentLocation.x * cellSizePx + lineWidthPx);
+        characterNode.setY(character.currentLocation.y * cellSizePx + lineWidthPx);
     }
 
     private void generateGemNodes() {
-        gemNodes = new GemNode[GemNode.NB_GEM_TYPES];
-        for (int i = 0; i < GemNode.NB_GEM_TYPES; i++) {
-            gemNodes[i] = new GemNode(i, (int)cellSizePx, (int)cellSizePx);
+        GemInformation[] gemsInformation = maze.getGemsInformation();
+        gemNodes = new GemNode[gemsInformation.length];
+        for (int i = 0; i < gemsInformation.length; i++) {
+            gemNodes[i] = new GemNode(i, (int)cellContentPx, (int)cellContentPx);
+            gemNodes[i].setX(gemsInformation[i].c.x * cellSizePx + lineWidthPx);
+            gemNodes[i].setY(gemsInformation[i].c.y * cellSizePx + lineWidthPx);
+            gemNodes[i].setVisible(!gemsInformation[i].collected);
+            mazeContentPane.getChildren().add(gemNodes[i]);
         }
+    }
+
+    private void updateGemNodes() {
+        GemInformation[] gemsInformation = maze.getGemsInformation();
+        for (int i = 0; i < gemsInformation.length; i++) {
+            gemNodes[i].setX(gemsInformation[i].c.x * cellSizePx + lineWidthPx);
+            gemNodes[i].setY(gemsInformation[i].c.y * cellSizePx + lineWidthPx);
+            gemNodes[i].setVisible(!gemsInformation[i].collected);
+        }
+    }
+
+    public void update() {
+        updateCharacterNode();
+        updateGemNodes();
     }
 
     public Maze getMaze() {
@@ -29,7 +87,7 @@ public class MazeNode extends Canvas {
     }
     
 	public void draw() {
-        GraphicsContext gc = getGraphicsContext2D();
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.WHITE);
 		gc.fillRect(0, 0, cellSizePx*maze.getWidth() + lineWidthPx, cellSizePx*maze.getHeight() + lineWidthPx);
 		gc.setFill(Color.BLACK);
@@ -54,9 +112,5 @@ public class MazeNode extends Canvas {
                 }
 			}
 		}
-
-        for (GemInformation gi : maze.getGemsInformation()) {
-            gc.drawImage(gemNodes[gi.id % gemNodes.length], gi.c.x * cellSizePx, gi.c.y * cellSizePx);
-        }
 	}
 }

@@ -1,22 +1,15 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-class Coordinate {
-    public int x;
-    public int y;
-    Coordinate(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
 class GemInformation {
     public Coordinate c;
     public int id;
+    public boolean collected;
 
     GemInformation(Coordinate c, int id) {
         this.c = c;
         this.id = id;
+        this.collected = false;
     }
 }
 
@@ -38,13 +31,20 @@ public class Maze {
 
 
     private int[][] maze;
-    private GemInformation[] initialGemsInformation;
+    private GemInformation[] gemsInformation;
+    private Character character;
+    private Runnable onChangeCallback;
 
-    public Maze(int width, int height, double easiness, int nbGems) {
+    public Maze(int width, int height, double easiness, Character character, int nbGems) {
+        this.character = character;
         generate(width, height);
         makeMazeEasier(easiness);
         addExit();
         addGems(nbGems);
+    }
+
+    public void setOnChangeCallback(Runnable onChangeCallback) {
+        this.onChangeCallback = onChangeCallback;
     }
 
     public int getWidth() {
@@ -232,7 +232,7 @@ public class Maze {
     }
 
     private void addGems(int nbGems) {
-        GemInformation[] gemsInformation = new GemInformation[nbGems];
+        gemsInformation = new GemInformation[nbGems];
         int i = 0;
         while (i < nbGems) {
             int x = (int) (Math.random() * getWidth());
@@ -244,21 +244,69 @@ public class Maze {
                 i++;
             }
         }
-        initialGemsInformation = gemsInformation;
     }
 
-    public Iterable<GemInformation> getGemsInformation() {
-        ArrayList<GemInformation> gemsInformation = new ArrayList<GemInformation>();
-        for (GemInformation gi : initialGemsInformation) {
-            if ((maze[gi.c.x][gi.c.y] & GEM) != 0) {
-                gemsInformation.add(gi);
-            }
-        }
+    public GemInformation[] getGemsInformation() {
         return gemsInformation;
     }
 
-    public void removeGem(int x, int y) {
+    public void collectGem(int x, int y) {
         maze[x][y] &= ~GEM;
+        for (GemInformation gi : gemsInformation) {
+            if (gi.c.x == x && gi.c.y == y) {
+                gi.collected = true;
+                character.nbOwnedGems++;
+                break;
+            }
+        }
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public boolean moveCharacterUp() {
+        if (character.currentLocation.y > 0 && hasTopWall(character.currentLocation.x, character.currentLocation.y)) {
+            return false;
+        }
+        moveCharacter(0, -1);
+        return true;
+    }
+
+    public boolean moveCharacterDown() {
+        if (character.currentLocation.y < getHeight() - 1 && hasBottomWall(character.currentLocation.x, character.currentLocation.y)) {
+            return false;
+        }
+        moveCharacter(0, 1);
+        return true;
+    }
+
+    public boolean moveCharacterLeft() {
+        if (character.currentLocation.x > 0 && hasLeftWall(character.currentLocation.x, character.currentLocation.y)) {
+            return false;
+        }
+        moveCharacter(-1, 0);
+        return true;
+    }
+
+    public boolean moveCharacterRight() {
+        if (character.currentLocation.x < getWidth() - 1 && hasRightWall(character.currentLocation.x, character.currentLocation.y)) {
+            return false;
+        }
+        moveCharacter(1, 0);
+        return true;
+    }
+
+    private void moveCharacter(int dx, int dy) {
+        assert dx == 0 || dy == 0;
+        assert dx == 0 || dx == 1 || dx == -1;
+        assert dy == 0 || dy == 1 || dy == -1;
+        character.currentLocation.x += dx;
+        character.currentLocation.y += dy;
+        collectGem(character.currentLocation.x, character.currentLocation.y);
+        if (onChangeCallback != null) {
+            onChangeCallback.run();
+        }
     }
 	
 	// For debugging
