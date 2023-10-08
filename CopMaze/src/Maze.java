@@ -1,18 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-class GemInformation {
-    public Coordinate c;
-    public int id;
-    public boolean collected;
-
-    GemInformation(Coordinate c, int id) {
-        this.c = c;
-        this.id = id;
-        this.collected = false;
-    }
-}
-
 class Wall {
     public Coordinate c;
     public int location;
@@ -31,7 +19,7 @@ public class Maze {
 
 
     private int[][] maze;
-    private GemInformation[] gemsInformation;
+    private Gem[] gems;
     private Character character;
     private Runnable onChangeCallback;
 
@@ -232,7 +220,7 @@ public class Maze {
     }
 
     private void addGems(int nbGems) {
-        gemsInformation = new GemInformation[nbGems];
+        gems = new Gem[nbGems];
         int i = 0;
         while (i < nbGems) {
             int x = (int) (Math.random() * getWidth());
@@ -240,25 +228,26 @@ public class Maze {
             
             if ((maze[x][y] & GEM) == 0) {
                 maze[x][y] |= GEM;
-                gemsInformation[i] = new GemInformation(new Coordinate(x, y), i);
+                gems[i] = new Gem(new Coordinate(x, y), i);
                 i++;
             }
         }
     }
 
-    public GemInformation[] getGemsInformation() {
-        return gemsInformation;
+    public Gem[] getGems() {
+        return gems;
     }
 
-    public void collectGem(int x, int y) {
-        maze[x][y] &= ~GEM;
-        for (GemInformation gi : gemsInformation) {
-            if (gi.c.x == x && gi.c.y == y) {
-                gi.collected = true;
+    public boolean collectGem(int x, int y) {
+        for (Gem gem : gems) {
+            if (gem.c.x == x && gem.c.y == y && !gem.collected) {
+                maze[x][y] &= ~GEM;
+                gem.collected = true;
                 character.nbOwnedGems++;
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     public Character getCharacter() {
@@ -266,7 +255,7 @@ public class Maze {
     }
 
     public boolean moveCharacterUp() {
-        if (character.currentLocation.y > 0 && hasTopWall(character.currentLocation.x, character.currentLocation.y)) {
+        if (hasTopWall(character.currentLocation.x, character.currentLocation.y)) {
             return false;
         }
         moveCharacter(0, -1);
@@ -274,7 +263,7 @@ public class Maze {
     }
 
     public boolean moveCharacterDown() {
-        if (character.currentLocation.y < getHeight() - 1 && hasBottomWall(character.currentLocation.x, character.currentLocation.y)) {
+        if (hasBottomWall(character.currentLocation.x, character.currentLocation.y)) {
             return false;
         }
         moveCharacter(0, 1);
@@ -282,7 +271,7 @@ public class Maze {
     }
 
     public boolean moveCharacterLeft() {
-        if (character.currentLocation.x > 0 && hasLeftWall(character.currentLocation.x, character.currentLocation.y)) {
+        if (hasLeftWall(character.currentLocation.x, character.currentLocation.y)) {
             return false;
         }
         moveCharacter(-1, 0);
@@ -290,7 +279,7 @@ public class Maze {
     }
 
     public boolean moveCharacterRight() {
-        if (character.currentLocation.x < getWidth() - 1 && hasRightWall(character.currentLocation.x, character.currentLocation.y)) {
+        if (hasRightWall(character.currentLocation.x, character.currentLocation.y)) {
             return false;
         }
         moveCharacter(1, 0);

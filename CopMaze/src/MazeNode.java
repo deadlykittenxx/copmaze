@@ -3,19 +3,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.GraphicsContext;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-
-class MazeItemProperties {
-    IntegerProperty x;
-    IntegerProperty y;
-
-    public MazeItemProperties(int x, int y) {
-        this.x = new SimpleIntegerProperty(x);
-        this.y = new SimpleIntegerProperty(y);
-    }
-}
-
 public class MazeNode extends Pane {
     private Maze maze;
     private double cellSizePx;
@@ -57,23 +44,23 @@ public class MazeNode extends Pane {
     }
 
     private void generateGemNodes() {
-        GemInformation[] gemsInformation = maze.getGemsInformation();
-        gemNodes = new GemNode[gemsInformation.length];
-        for (int i = 0; i < gemsInformation.length; i++) {
+        Gem[] gems = maze.getGems();
+        gemNodes = new GemNode[gems.length];
+        for (int i = 0; i < gems.length; i++) {
             gemNodes[i] = new GemNode(i, (int)cellContentPx, (int)cellContentPx);
-            gemNodes[i].setX(gemsInformation[i].c.x * cellSizePx + lineWidthPx);
-            gemNodes[i].setY(gemsInformation[i].c.y * cellSizePx + lineWidthPx);
-            gemNodes[i].setVisible(!gemsInformation[i].collected);
+            gemNodes[i].setX(gems[i].c.x * cellSizePx + lineWidthPx);
+            gemNodes[i].setY(gems[i].c.y * cellSizePx + lineWidthPx);
+            gemNodes[i].setVisible(!gems[i].collected);
             mazeContentPane.getChildren().add(gemNodes[i]);
         }
     }
 
     private void updateGemNodes() {
-        GemInformation[] gemsInformation = maze.getGemsInformation();
-        for (int i = 0; i < gemsInformation.length; i++) {
-            gemNodes[i].setX(gemsInformation[i].c.x * cellSizePx + lineWidthPx);
-            gemNodes[i].setY(gemsInformation[i].c.y * cellSizePx + lineWidthPx);
-            gemNodes[i].setVisible(!gemsInformation[i].collected);
+        Gem[] gems = maze.getGems();
+        for (int i = 0; i < gems.length; i++) {
+            gemNodes[i].setX(gems[i].c.x * cellSizePx + lineWidthPx);
+            gemNodes[i].setY(gems[i].c.y * cellSizePx + lineWidthPx);
+            gemNodes[i].setVisible(!gems[i].collected);
         }
     }
 

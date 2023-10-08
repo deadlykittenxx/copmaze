@@ -61,10 +61,10 @@ public class CopMaze extends Application {
 	private String[] contentOfRule = new String[8];
 	private Text txtRule;
 	private int howToPlayStep = 0;
+
 	private Character player;
 	private DifficultyLevel difficultyLevel;
-	
-	public Maze maze;
+	private Maze maze;
 
 	public static void main(String[] args) {
 		launch(args);

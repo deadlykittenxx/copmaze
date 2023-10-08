@@ -9,7 +9,7 @@ public class GemNode extends ImageView {
 	public static final int NB_GEM_TYPES = GEM_IMAGES_URLS.length;
 	
 	public GemNode(int type, int widthPx, int heightPx) {
-		super(GEM_IMAGES_URLS[type % GEM_IMAGES_URLS.length]);
+		super(GEM_IMAGES_URLS[type % NB_GEM_TYPES]);
 		setFitWidth(widthPx);
 		setFitHeight(heightPx);
 	}

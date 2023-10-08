@@ -9,7 +9,7 @@ public class CharacterNode extends Sprite {
 	public static final int NB_CHARACTER_TYPES = GEM_IMAGES_URLS.length;
 	
 	public CharacterNode(int type, int widthPx, int heightPx) {
-		super(GEM_IMAGES_URLS[type % GEM_IMAGES_URLS.length], SPRITE_WIDTH_PX, SPRITE_HEIGHT_PX);
+		super(GEM_IMAGES_URLS[type % NB_CHARACTER_TYPES], SPRITE_WIDTH_PX, SPRITE_HEIGHT_PX);
 		setFitWidth(widthPx);
 		setFitHeight(heightPx);
 		setFPS(FPS);
