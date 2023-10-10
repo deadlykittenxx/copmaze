@@ -14,5 +14,7 @@ public class Character {
 		hasKey = false;
 		currentLocation = new Coordinate(0, 0);
 	}
+	
+	
 }
 

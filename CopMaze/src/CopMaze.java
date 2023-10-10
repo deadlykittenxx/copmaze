@@ -23,8 +23,8 @@ import javafx.stage.Stage;
 
 public class CopMaze extends Application {
 
-	public static final int WIDTH = 640;
-	public static final int HEIGHT = 480;
+	public static final int WIDTH = 720;
+	public static final int HEIGHT = 640;
 
 	public static final int GRID_SIZE = 25; // Number of pixels per cell
 	private static final int BORDER_SIZE = 2;
@@ -45,7 +45,7 @@ public class CopMaze extends Application {
 	private Scene levelScene;
 	private Scene mazeScene;
 	private Scene ruleScene;
-	private Pane mazeRoot;
+	private BorderPane mazeRoot;
 	private EventHandler<ActionEvent> btnStartListener;
 	private EventHandler<ActionEvent> btnHowtoPlayListener;
 	private EventHandler<ActionEvent> btnCharacterListener;
@@ -60,6 +60,7 @@ public class CopMaze extends Application {
 	private Label lblRule;
 	private String[] contentOfRule = new String[8];
 	private Text txtRule;
+	private Label numOfGems;
 	private int howToPlayStep = 0;
 
 	private Character player;
@@ -85,7 +86,7 @@ public class CopMaze extends Application {
 		BorderPane ruleRoot = new BorderPane();
 		ruleScene = new Scene(ruleRoot);
 		
-		mazeRoot = new Pane();
+		mazeRoot = new BorderPane();
 		mazeScene = new Scene(mazeRoot);
 		//mazeRoot.setAlignment(Pos.CENTER);
 
@@ -131,6 +132,8 @@ public class CopMaze extends Application {
 				} else if(e.getCode().equals(KeyCode.DOWN)) {
 					maze.moveCharacterDown();
 				}
+				
+				updateGemsLabel();
 			}
 		};
 		
@@ -242,18 +245,28 @@ public class CopMaze extends Application {
 		}
 	}
 	
+	public void updateGemsLabel() {
+		numOfGems.setText("Gems Left: " + maze.getNumOfGemsLeft());
+	}
+	
 	/*
 	 * Game Scene
 	 */
-	public void mazeGUI(Pane root) {
+	public void mazeGUI(BorderPane root) {
 		root.setId("mazeScene");
 		
+		
 		maze = new Maze(difficultyLevel.mazeWidth, difficultyLevel.mazeHeight, difficultyLevel.easiness, player, difficultyLevel.nbGems);
+		
 		MazeNode mazeNode = new MazeNode(maze, GRID_SIZE, BORDER_SIZE);
-
+		mazeNode.setMaxWidth(maze.getWidth()*GRID_SIZE + BORDER_SIZE);
+		mazeNode.setMaxHeight(maze.getHeight()*GRID_SIZE + BORDER_SIZE);
+		numOfGems = new Label("Gems Left: " + maze.getNumOfGemsLeft());
+		
 		mazeScene.setOnKeyPressed(characterListener);
 		
-		root.getChildren().addAll(mazeNode);
+		root.setCenter(mazeNode);
+		root.setBottom(numOfGems);
 	}
 	
 	/*

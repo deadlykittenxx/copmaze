@@ -9,6 +9,8 @@ public class MazeNode extends Pane {
     private double lineWidthPx;
     private double cellContentPx;
     private GemNode[] gemNodes;
+    private KeyNode keyNode;
+    private DoorNode doorNode;
     private CharacterNode characterNode;
     private Canvas canvas;
     private Pane mazeContentPane;
@@ -22,12 +24,18 @@ public class MazeNode extends Pane {
         this.cellContentPx = cellSizePx - lineWidthPx;
         generateCharacterNode();
         generateGemNodes();
+        generateDoorNode();
         draw();
         this.getChildren().addAll(canvas, mazeContentPane);
         this.maze.setOnChangeCallback(() -> {
             update();
+            
+            if(this.maze.getNumOfGemsLeft().equals("0")) {
+            	generateKeyNode();
+            }
         });
     }
+    
 
     private void generateCharacterNode() {
         Character character = maze.getCharacter();
@@ -54,6 +62,25 @@ public class MazeNode extends Pane {
             mazeContentPane.getChildren().add(gemNodes[i]);
         }
     }
+    
+    private void generateKeyNode() {
+    	Key key = maze.getKey();
+    	keyNode = new KeyNode((int)cellContentPx, (int)cellContentPx);
+    	keyNode.setX(key.c.x * cellSizePx + lineWidthPx);
+    	keyNode.setY(key.c.y * cellSizePx + lineWidthPx);
+    	keyNode.setVisible(!key.collected);
+    	mazeContentPane.getChildren().add(keyNode);
+    	
+    }
+    
+    private void generateDoorNode() {
+    	Door door = maze.getDoor();
+    	doorNode = new DoorNode((int)cellContentPx, (int)cellContentPx);
+    	doorNode.setX(door.c.x * cellSizePx + lineWidthPx);
+    	doorNode.setY(door.c.y * cellSizePx + lineWidthPx);
+    	doorNode.setVisible(true);
+    	mazeContentPane.getChildren().add(doorNode);
+    }
 
     private void updateGemNodes() {
         Gem[] gems = maze.getGems();
@@ -62,6 +89,8 @@ public class MazeNode extends Pane {
             gemNodes[i].setY(gems[i].c.y * cellSizePx + lineWidthPx);
             gemNodes[i].setVisible(!gems[i].collected);
         }
+        
+        
     }
 
     public void update() {
@@ -69,6 +98,7 @@ public class MazeNode extends Pane {
         updateGemNodes();
     }
 
+    
     public Maze getMaze() {
         return maze;
     }

@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+
 class Wall {
     public Coordinate c;
     public int location;
@@ -20,15 +23,20 @@ public class Maze {
 
     private int[][] maze;
     private Gem[] gems;
+    private Key key;
+    private Door door;
     private Character character;
     private Runnable onChangeCallback;
-
+    private Wall exit; 
+    
     public Maze(int width, int height, double easiness, Character character, int nbGems) {
         this.character = character;
         generate(width, height);
         makeMazeEasier(easiness);
         addExit();
         addGems(nbGems);
+        addKey();
+        addDoor();
     }
 
     public void setOnChangeCallback(Runnable onChangeCallback) {
@@ -217,6 +225,12 @@ public class Maze {
         } else { // Right
             maze[c.x][c.y] |= RIGHT;
         }
+        
+        exit = w;
+    }
+    
+    public Wall getExit() {
+    	return exit;
     }
 
     private void addGems(int nbGems) {
@@ -233,9 +247,19 @@ public class Maze {
             }
         }
     }
+    
 
     public Gem[] getGems() {
         return gems;
+    }
+  
+    
+    public String getNumOfGemsLeft() {
+    	int num = 0;
+    	for (int i=0; i<gems.length; i++) {
+    		if(gems[i].collected == false) num ++;
+    	}
+    	return Integer.toString(num);
     }
 
     public boolean collectGem(int x, int y) {
@@ -249,7 +273,30 @@ public class Maze {
         }
         return false;
     }
+    
+    private void addKey() {
+    	int x = (int) (Math.random() * getWidth());
+        int y = (int) (Math.random() * getHeight());
+        
+    	key = new Key(new Coordinate(x, y));
+    	
+    }
+    
+    public Key getKey() {
+    	return key;
+    }
 
+    private void addDoor() {
+    	Wall exit = getExit();
+    	
+    	door = new Door(new Coordinate(exit.c.x, exit.c.y));
+    }
+    
+    public Door getDoor() {
+    	return door;
+    }
+    
+    
     public Character getCharacter() {
         return character;
     }
