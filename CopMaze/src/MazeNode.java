@@ -58,6 +58,18 @@ public class MazeNode extends Pane {
                     event.setDragDetect(true);
                 });
             }
+           
+            // when the cahracter reaches the exit
+            if(maze.getDoor().isOpened) {
+            	Coordinate c = new Coordinate(maze.getCharacter().currentLocation.x, maze.getCharacter().currentLocation.y);
+                Wall exit = maze.getExit();
+                if(c.x == exit.c.x && c.y == exit.c.y) {
+                	System.out.println("YOU WIN");
+                	AlertDialog.display();
+                }
+            }
+            
+            
         });
         
         
@@ -125,6 +137,7 @@ public class MazeNode extends Pane {
             /* DOOR IS OPENED */
             Image doorOpened = new Image("/resources/image/doorOpened.png");
             doorNode.setImage(doorOpened);
+            door.isOpened = true;
             
             if (db.hasString()) {
                 System.out.println("Dropped: " + db.getString());

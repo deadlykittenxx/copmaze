@@ -1,10 +1,11 @@
 
 public class Door {
 	public Coordinate c;
-    public boolean opened;
+    public boolean isOpened;
 
     Door(Coordinate c) {
         this.c = c;
-        this.opened = false;
+        this.isOpened = false;
     }
+    
 }
