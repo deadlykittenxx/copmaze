@@ -8,4 +8,6 @@ public class DoorNode extends ImageView {
 		setFitWidth(widthPx);
 		setFitHeight(heightPx);
 	}
+	
+	
 }

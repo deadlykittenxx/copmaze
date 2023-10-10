@@ -1,7 +1,14 @@
+import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 
 public class MazeNode extends Pane {
     private Maze maze;
@@ -27,13 +34,34 @@ public class MazeNode extends Pane {
         generateDoorNode();
         draw();
         this.getChildren().addAll(canvas, mazeContentPane);
+        
+        
+        
         this.maze.setOnChangeCallback(() -> {
             update();
             
             if(this.maze.getNumOfGemsLeft().equals("0")) {
+            	
             	generateKeyNode();
+            	
+            	/* make key draggable */
+            	keyNode.setOnDragDetected((MouseEvent event) -> {
+                    System.out.println("Key drag detected");
+
+                    Dragboard db = keyNode.startDragAndDrop(TransferMode.ANY);
+
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString("door open");
+                    db.setContent(content);
+                });
+            	keyNode.setOnMouseDragged((MouseEvent event) -> {
+                    event.setDragDetect(true);
+                });
             }
         });
+        
+        
+        
     }
     
 
@@ -80,6 +108,32 @@ public class MazeNode extends Pane {
     	doorNode.setY(door.c.y * cellSizePx + lineWidthPx);
     	doorNode.setVisible(true);
     	mazeContentPane.getChildren().add(doorNode);
+    	
+    	doorNode.setOnDragOver(new EventHandler<DragEvent>() {
+			@Override
+			public void handle(DragEvent event) {
+				if (event.getGestureSource() != doorNode && event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+                }
+                event.consume();
+			}
+        });
+    	
+    	doorNode.setOnDragDropped((DragEvent event) -> {
+            Dragboard db = event.getDragboard();
+            
+            /* DOOR IS OPENED */
+            Image doorOpened = new Image("/resources/image/doorOpened.png");
+            doorNode.setImage(doorOpened);
+            
+            if (db.hasString()) {
+                System.out.println("Dropped: " + db.getString());
+                event.setDropCompleted(true);
+            } else {
+                event.setDropCompleted(false);
+            }
+            event.consume();
+        });
     }
 
     private void updateGemNodes() {
@@ -130,4 +184,6 @@ public class MazeNode extends Pane {
 			}
 		}
 	}
+
+	
 }
