@@ -24,6 +24,8 @@ public class MazeNode extends Pane {
     private Canvas canvas;
     private Pane mazeContentPane;
 
+    private SoundDetector soundDetector = new SoundDetector();
+
     public MazeNode(Maze maze, double cellSizePx, double lineWidthPx) {
         this.canvas = new Canvas(maze.getWidth() * cellSizePx + lineWidthPx, maze.getHeight() * cellSizePx + lineWidthPx);
         mazeContentPane = new Pane();
@@ -82,7 +84,10 @@ public class MazeNode extends Pane {
         });
         
         updatePoliceNode();
-        
+
+        new Thread(() -> {
+            soundDetector.soundDetectStart();
+        }).start();
     }
     
 
@@ -180,20 +185,22 @@ public class MazeNode extends Pane {
 
     public void updatePoliceNode(){
     	Police police = maze.getPolice();
-    	
+        final boolean[] shouldPause = {false};
     	
     	Thread thread = new Thread() {
 			@Override
 			public void run() {
 				
 				Coordinate newPos = new Coordinate(police.c.x, police.c.y);
+
 				while(!police.stop) {
 					Platform.runLater(()->{
+
 						int rand = (int)(Math.random()*4);
-						if (rand == 0) { newPos.x = police.c.x +1; }
-						else if (rand == 1) { newPos.x = police.c.x -1; }
-						else if (rand == 2) { newPos.y = police.c.y + 1; }
-						else if (rand == 3) { newPos.y = police.c.y - 1; }
+						if (rand == 0) { newPos.x = police.c.x + 1; newPos.y = police.c.y; }
+						else if (rand == 1) { newPos.x = police.c.x - 1; newPos.y = police.c.y; }
+						else if (rand == 2) { newPos.y = police.c.y + 1; newPos.x = police.c.x; }
+						else if (rand == 3) { newPos.y = police.c.y - 1; newPos.x = police.c.x; }
 						
 						
 						if (newPos.x > maze.getWidth()-1) {}
@@ -207,8 +214,19 @@ public class MazeNode extends Pane {
 					    	policeNode.setY(police.c.y * cellSizePx + lineWidthPx);
 						}
 						
-						
-				    	
+                        if(soundDetector.soundLevel > 5000.0) {
+                            shouldPause[0] = true;
+                        }
+
+                        if (shouldPause[0]) {
+                            try {
+                                Thread.sleep(5000); // Sleep for 5 seconds
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            shouldPause[0] = false;
+                        }
+
 					});
 					try { Thread.sleep(700); } catch (InterruptedException e) {}
 				}
@@ -216,7 +234,8 @@ public class MazeNode extends Pane {
 		};
 		thread.setDaemon(true);
 		thread.start();
-    	
+
+
     }
     
     public void update() {
