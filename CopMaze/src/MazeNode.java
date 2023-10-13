@@ -68,8 +68,14 @@ public class MazeNode extends Pane {
                 Wall exit = maze.getExit();
                 if(c.x == exit.c.x && c.y == exit.c.y) {
                 	System.out.println("YOU WIN");
-                	AlertDialog.display();
+                	AlertDialog.display("YOU WIN");
                 }
+            }
+            
+            // when the character bump into police
+            if (maze.getCharacter().currentLocation.x == maze.getPolice().c.x && maze.getCharacter().currentLocation.y == maze.getPolice().c.y) {
+            	System.out.println("YOU LOSE");
+            	AlertDialog.display("YOU LOSE");
             }
             
             
