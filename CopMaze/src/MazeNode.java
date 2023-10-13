@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
@@ -18,6 +19,7 @@ public class MazeNode extends Pane {
     private GemNode[] gemNodes;
     private KeyNode keyNode;
     private DoorNode doorNode;
+    private PoliceNode policeNode;
     private CharacterNode characterNode;
     private Canvas canvas;
     private Pane mazeContentPane;
@@ -32,6 +34,7 @@ public class MazeNode extends Pane {
         generateCharacterNode();
         generateGemNodes();
         generateDoorNode();
+        generatePoliceNode();
         draw();
         this.getChildren().addAll(canvas, mazeContentPane);
         
@@ -72,7 +75,7 @@ public class MazeNode extends Pane {
             
         });
         
-        
+        updatePoliceNode();
         
     }
     
@@ -111,6 +114,15 @@ public class MazeNode extends Pane {
     	keyNode.setVisible(!key.collected);
     	mazeContentPane.getChildren().add(keyNode);
     	
+    }
+    
+    private void generatePoliceNode() {
+    	Police police = maze.getPolice();
+    	
+    	policeNode = new PoliceNode((int)cellContentPx, (int)cellContentPx);
+    	policeNode.setX(police.c.x * cellSizePx + lineWidthPx);
+    	policeNode.setY(police.c.y * cellSizePx + lineWidthPx);
+    	mazeContentPane.getChildren().add(policeNode);
     }
     
     private void generateDoorNode() {
@@ -160,6 +172,47 @@ public class MazeNode extends Pane {
         
     }
 
+    public void updatePoliceNode(){
+    	Police police = maze.getPolice();
+    	
+    	
+    	Thread thread = new Thread() {
+			@Override
+			public void run() {
+				
+				Coordinate newPos = new Coordinate(police.c.x, police.c.y);
+				while(!police.stop) {
+					Platform.runLater(()->{
+						int rand = (int)(Math.random()*4);
+						if (rand == 0) { newPos.x = police.c.x +1; }
+						else if (rand == 1) { newPos.x = police.c.x -1; }
+						else if (rand == 2) { newPos.y = police.c.y + 1; }
+						else if (rand == 3) { newPos.y = police.c.y - 1; }
+						
+						
+						if (newPos.x > maze.getWidth()-1) {}
+						else if (newPos.x < 0) {}
+						else if (newPos.y > maze.getHeight()-1) {}
+						else if (newPos.y < 0) {}
+						else {
+							police.c.x = newPos.x;
+							police.c.y = newPos.y;
+							policeNode.setX(police.c.x * cellSizePx + lineWidthPx);
+					    	policeNode.setY(police.c.y * cellSizePx + lineWidthPx);
+						}
+						
+						
+				    	
+					});
+					try { Thread.sleep(700); } catch (InterruptedException e) {}
+				}
+			};
+		};
+		thread.setDaemon(true);
+		thread.start();
+    	
+    }
+    
     public void update() {
         updateCharacterNode();
         updateGemNodes();
