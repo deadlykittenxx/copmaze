@@ -1,3 +1,5 @@
+
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -52,7 +54,7 @@ public class CopMaze extends Application {
 	private EventHandler<ActionEvent> btnLevelListener;
 	private EventHandler<ActionEvent> btnRuleNextListener;
 	private EventHandler<ActionEvent> btnRulePreviousListener;
-	private EventHandler<ActionEvent> btnGoBackListener;
+	public static EventHandler<ActionEvent> btnGoBackListener;
 	private EventHandler<KeyEvent> characterListener;
 	private Button btnGoBack;
 	private Button btnRuleNext;
@@ -66,13 +68,13 @@ public class CopMaze extends Application {
 	private Character player;
 	private DifficultyLevel difficultyLevel;
 	private Maze maze;
-
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+
 		VBox initRoot = new VBox(15);
 		initScene = new Scene(initRoot);
 		initRoot.setAlignment(Pos.CENTER);

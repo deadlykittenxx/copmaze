@@ -28,6 +28,7 @@ public class Maze {
     private Character character;
     private Runnable onChangeCallback;
     private Wall exit; 
+    private Police police;
     
     public Maze(int width, int height, double easiness, Character character, int nbGems) {
         this.character = character;
@@ -37,10 +38,12 @@ public class Maze {
         addGems(nbGems);
         addKey();
         addDoor();
+        addPolice();
     }
 
     public void setOnChangeCallback(Runnable onChangeCallback) {
         this.onChangeCallback = onChangeCallback;
+        
     }
 
     public int getWidth() {
@@ -291,11 +294,22 @@ public class Maze {
     	
     	door = new Door(new Coordinate(exit.c.x, exit.c.y));
     }
+   
     
     public Door getDoor() {
     	return door;
     }
     
+    private void addPolice() {
+    	int x = (int) (Math.random() * getWidth());
+        int y = (int) (Math.random() * getHeight());
+    	police = new Police(new Coordinate(x, y));
+    	
+    }
+    
+    public Police getPolice() {
+    	return police;
+    }
     
     public Character getCharacter() {
         return character;
@@ -345,6 +359,7 @@ public class Maze {
         }
     }
 	
+    
 	// For debugging
     public String toString() {
         String s = "";

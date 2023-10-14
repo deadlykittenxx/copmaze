@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
@@ -18,9 +19,12 @@ public class MazeNode extends Pane {
     private GemNode[] gemNodes;
     private KeyNode keyNode;
     private DoorNode doorNode;
+    private PoliceNode policeNode;
     private CharacterNode characterNode;
     private Canvas canvas;
     private Pane mazeContentPane;
+
+    private SoundDetector soundDetector = new SoundDetector();
 
     public MazeNode(Maze maze, double cellSizePx, double lineWidthPx) {
         this.canvas = new Canvas(maze.getWidth() * cellSizePx + lineWidthPx, maze.getHeight() * cellSizePx + lineWidthPx);
@@ -32,6 +36,7 @@ public class MazeNode extends Pane {
         generateCharacterNode();
         generateGemNodes();
         generateDoorNode();
+        generatePoliceNode();
         draw();
         this.getChildren().addAll(canvas, mazeContentPane);
         
@@ -65,15 +70,24 @@ public class MazeNode extends Pane {
                 Wall exit = maze.getExit();
                 if(c.x == exit.c.x && c.y == exit.c.y) {
                 	System.out.println("YOU WIN");
-                	AlertDialog.display();
+                	AlertDialog.display("YOU WIN");
                 }
+            }
+            
+            // when the character bump into police
+            if (maze.getCharacter().currentLocation.x == maze.getPolice().c.x && maze.getCharacter().currentLocation.y == maze.getPolice().c.y) {
+            	System.out.println("YOU LOSE");
+            	AlertDialog.display("YOU LOSE");
             }
             
             
         });
         
-        
-        
+        updatePoliceNode();
+
+        new Thread(() -> {
+            soundDetector.soundDetectStart();
+        }).start();
     }
     
 
@@ -111,6 +125,15 @@ public class MazeNode extends Pane {
     	keyNode.setVisible(!key.collected);
     	mazeContentPane.getChildren().add(keyNode);
     	
+    }
+    
+    private void generatePoliceNode() {
+    	Police police = maze.getPolice();
+    	
+    	policeNode = new PoliceNode((int)cellContentPx, (int)cellContentPx);
+    	policeNode.setX(police.c.x * cellSizePx + lineWidthPx);
+    	policeNode.setY(police.c.y * cellSizePx + lineWidthPx);
+    	mazeContentPane.getChildren().add(policeNode);
     }
     
     private void generateDoorNode() {
@@ -160,6 +183,61 @@ public class MazeNode extends Pane {
         
     }
 
+    public void updatePoliceNode(){
+    	Police police = maze.getPolice();
+        final boolean[] shouldPause = {false};
+    	
+    	Thread thread = new Thread() {
+			@Override
+			public void run() {
+				
+				Coordinate newPos = new Coordinate(police.c.x, police.c.y);
+
+				while(!police.stop) {
+					Platform.runLater(()->{
+
+						int rand = (int)(Math.random()*4);
+						if (rand == 0) { newPos.x = police.c.x + 1; newPos.y = police.c.y; }
+						else if (rand == 1) { newPos.x = police.c.x - 1; newPos.y = police.c.y; }
+						else if (rand == 2) { newPos.y = police.c.y + 1; newPos.x = police.c.x; }
+						else if (rand == 3) { newPos.y = police.c.y - 1; newPos.x = police.c.x; }
+						
+						
+						if (newPos.x > maze.getWidth()-1) {}
+						else if (newPos.x < 0) {}
+						else if (newPos.y > maze.getHeight()-1) {}
+						else if (newPos.y < 0) {}
+						else {
+							police.c.x = newPos.x;
+							police.c.y = newPos.y;
+							policeNode.setX(police.c.x * cellSizePx + lineWidthPx);
+					    	policeNode.setY(police.c.y * cellSizePx + lineWidthPx);
+						}
+						
+                        if(soundDetector.soundLevel > 5000.0) {
+                            shouldPause[0] = true;
+                        }
+
+                        if (shouldPause[0]) {
+                            try {
+                                Thread.sleep(5000); // Sleep for 5 seconds
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            shouldPause[0] = false;
+                        }
+
+					});
+					try { Thread.sleep(700); } catch (InterruptedException e) {}
+				}
+			};
+		};
+		thread.setDaemon(true);
+		thread.start();
+
+
+    }
+    
     public void update() {
         updateCharacterNode();
         updateGemNodes();
