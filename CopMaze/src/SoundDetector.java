@@ -26,7 +26,7 @@ public class SoundDetector {
             while (true) {
                 int bytesRead = line.read(buffer, 0, buffer.length);
                 soundLevel = getSoundLevel(bytesRead);
-                System.out.println("Sound level: " + soundLevel);
+                // System.out.println("Sound level: " + soundLevel);
 
                 Thread.sleep(1000); // Interval between audio readings
             }

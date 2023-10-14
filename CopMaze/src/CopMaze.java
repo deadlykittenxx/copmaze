@@ -258,7 +258,7 @@ public class CopMaze extends Application {
 		root.setId("mazeScene");
 		
 		
-		maze = new Maze(difficultyLevel.mazeWidth, difficultyLevel.mazeHeight, difficultyLevel.easiness, player, difficultyLevel.nbGems);
+		maze = new Maze(difficultyLevel.mazeWidth, difficultyLevel.mazeHeight, difficultyLevel.easiness, player, difficultyLevel.nbGems, difficultyLevel.nbPolice);
 		
 		MazeNode mazeNode = new MazeNode(maze, GRID_SIZE, BORDER_SIZE);
 		mazeNode.setMaxWidth(maze.getWidth()*GRID_SIZE + BORDER_SIZE);

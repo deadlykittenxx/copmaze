@@ -1,10 +1,10 @@
 
 public class Key {
 	public Coordinate c;
-    public boolean collected;
+    public boolean collected = false;
+    public boolean visible = false;
 
     Key(Coordinate c) {
         this.c = c;
-        this.collected = false;
     }
 }

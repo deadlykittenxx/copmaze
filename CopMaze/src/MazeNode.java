@@ -17,9 +17,9 @@ public class MazeNode extends Pane {
     private double lineWidthPx;
     private double cellContentPx;
     private GemNode[] gemNodes;
+    private PoliceNode[] policeNodes;
     private KeyNode keyNode;
     private DoorNode doorNode;
-    private PoliceNode policeNode;
     private CharacterNode characterNode;
     private Canvas canvas;
     private Pane mazeContentPane;
@@ -36,7 +36,8 @@ public class MazeNode extends Pane {
         generateCharacterNode();
         generateGemNodes();
         generateDoorNode();
-        generatePoliceNode();
+        generatePoliceNodes();
+        generateKeyNode();
         draw();
         this.getChildren().addAll(canvas, mazeContentPane);
         
@@ -45,45 +46,18 @@ public class MazeNode extends Pane {
         this.maze.setOnChangeCallback(() -> {
             update();
             
-            if(this.maze.getNumOfGemsLeft().equals("0")) {
-            	
-            	generateKeyNode();
-            	
-            	/* make key draggable */
-            	keyNode.setOnDragDetected((MouseEvent event) -> {
-                    System.out.println("Key drag detected");
-
-                    Dragboard db = keyNode.startDragAndDrop(TransferMode.ANY);
-
-                    ClipboardContent content = new ClipboardContent();
-                    content.putString("door open");
-                    db.setContent(content);
-                });
-            	keyNode.setOnMouseDragged((MouseEvent event) -> {
-                    event.setDragDetect(true);
-                });
-            }
-           
-            // when the character reaches the exit
-            if(maze.getDoor().isOpened) {
-            	Coordinate c = new Coordinate(maze.getCharacter().currentLocation.x, maze.getCharacter().currentLocation.y);
-                Wall exit = maze.getExit();
-                if(c.x == exit.c.x && c.y == exit.c.y) {
-                	System.out.println("YOU WIN");
-                	AlertDialog.display("YOU WIN");
-                }
+            if (this.maze.getNumOfGemsLeft() == 0) {
+            	// generateKeyNode();
             }
             
-            // when the character bump into police
-            if (maze.getCharacter().currentLocation.x == maze.getPolice().c.x && maze.getCharacter().currentLocation.y == maze.getPolice().c.y) {
+            if (maze.hasWon()) {          // when the character reaches the exit
+            	System.out.println("YOU WIN");
+            	AlertDialog.display("YOU WIN");
+            } else if (maze.hasLost()) {  // when the character bump into police
             	System.out.println("YOU LOSE");
             	AlertDialog.display("YOU LOSE");
             }
-            
-            
         });
-        
-        updatePoliceNode();
 
         new Thread(() -> {
             soundDetector.soundDetectStart();
@@ -122,18 +96,35 @@ public class MazeNode extends Pane {
     	keyNode = new KeyNode((int)cellContentPx, (int)cellContentPx);
     	keyNode.setX(key.c.x * cellSizePx + lineWidthPx);
     	keyNode.setY(key.c.y * cellSizePx + lineWidthPx);
-    	keyNode.setVisible(!key.collected);
+    	keyNode.setVisible(key.visible && !key.collected);
     	mazeContentPane.getChildren().add(keyNode);
+            	
+        /* make key draggable */
+        keyNode.setOnDragDetected((MouseEvent event) -> {
+            System.out.println("Key drag detected");
+
+            Dragboard db = keyNode.startDragAndDrop(TransferMode.ANY);
+
+            ClipboardContent content = new ClipboardContent();
+            content.putString("door open");
+            db.setContent(content);
+        });
+        keyNode.setOnMouseDragged((MouseEvent event) -> {
+            event.setDragDetect(true);
+        });
     	
     }
     
-    private void generatePoliceNode() {
-    	Police police = maze.getPolice();
-    	
-    	policeNode = new PoliceNode((int)cellContentPx, (int)cellContentPx);
-    	policeNode.setX(police.c.x * cellSizePx + lineWidthPx);
-    	policeNode.setY(police.c.y * cellSizePx + lineWidthPx);
-    	mazeContentPane.getChildren().add(policeNode);
+    private void generatePoliceNodes() {
+    	Police[] police = maze.getPolice();
+
+        policeNodes = new PoliceNode[police.length];
+        for (int i = 0; i < police.length; i++) {
+            policeNodes[i] = new PoliceNode((int)cellContentPx, (int)cellContentPx);
+            policeNodes[i].setX(police[i].c.x * cellSizePx + lineWidthPx);
+            policeNodes[i].setY(police[i].c.y * cellSizePx + lineWidthPx);
+            mazeContentPane.getChildren().add(policeNodes[i]);
+        }
     }
     
     private void generateDoorNode() {
@@ -179,11 +170,25 @@ public class MazeNode extends Pane {
             gemNodes[i].setY(gems[i].c.y * cellSizePx + lineWidthPx);
             gemNodes[i].setVisible(!gems[i].collected);
         }
-        
-        
     }
 
-    public void updatePoliceNode(){
+    private void updatePoliceNodes() {
+        Police[] police = maze.getPolice();
+        for (int i = 0; i < police.length; i++) {
+            policeNodes[i].setX(police[i].c.x * cellSizePx + lineWidthPx);
+            policeNodes[i].setY(police[i].c.y * cellSizePx + lineWidthPx);
+        }
+    }
+
+    private void updateKeyNode() {
+        Key key = maze.getKey();
+        keyNode.setX(key.c.x * cellSizePx + lineWidthPx);
+        keyNode.setY(key.c.y * cellSizePx + lineWidthPx);
+        keyNode.setVisible(key.visible && !key.collected);
+    }
+
+/*
+    public void oldUpdatePoliceNodes() {
     	Police police = maze.getPolice();
         final boolean[] shouldPause = {false};
     	
@@ -234,13 +239,14 @@ public class MazeNode extends Pane {
 		};
 		thread.setDaemon(true);
 		thread.start();
-
-
     }
-    
+*/
+
     public void update() {
         updateCharacterNode();
         updateGemNodes();
+        updatePoliceNodes();
+        updateKeyNode();
     }
 
     
