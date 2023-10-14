@@ -59,7 +59,7 @@ public class MazeNode extends Pane {
                 });
             }
            
-            // when the cahracter reaches the exit
+            // when the character reaches the exit
             if(maze.getDoor().isOpened) {
             	Coordinate c = new Coordinate(maze.getCharacter().currentLocation.x, maze.getCharacter().currentLocation.y);
                 Wall exit = maze.getExit();
