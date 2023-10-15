@@ -28,7 +28,7 @@ public class CopMaze extends Application {
 	public static final int WIDTH = 720;
 	public static final int HEIGHT = 640;
 
-	public static final int GRID_SIZE = 25; // Number of pixels per cell
+	public static final int GRID_SIZE = 35; // Number of pixels per cell
 	private static final int BORDER_SIZE = 2;
 
 	private static final CharacterInfo[] CHARACTERS_INFO = new CharacterInfo[] {
