@@ -202,6 +202,7 @@ public class CopMaze extends Application {
 			public void handle(ActionEvent arg0) {
 				stage.setScene(initScene);
 				updateRules(0);
+				AlertDialog.stage.hide();
 			}
 		};
 
