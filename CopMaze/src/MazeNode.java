@@ -118,7 +118,7 @@ public class MazeNode extends Pane {
     	doorNode = new DoorNode((int)cellContentPx, (int)cellContentPx);
     	doorNode.setX(door.c.x * cellSizePx + lineWidthPx);
     	doorNode.setY(door.c.y * cellSizePx + lineWidthPx);
-    	doorNode.setVisible(true);
+        doorNode.setOpened(door.isOpened);
     	mazeContentPane.getChildren().add(doorNode);
     	
     	doorNode.setOnDragOver(new EventHandler<DragEvent>() {
@@ -133,14 +133,10 @@ public class MazeNode extends Pane {
     	
     	doorNode.setOnDragDropped((DragEvent event) -> {
             Dragboard db = event.getDragboard();
-            
-            /* DOOR IS OPENED */
-            Image doorOpened = new Image("/resources/image/doorOpened.png");
-            doorNode.setImage(doorOpened);
-            door.isOpened = true;
-            
             if (db.hasString()) {
                 System.out.println("Dropped: " + db.getString());
+                maze.setDoorOpen(true);
+                maze.setKeyCollected(true);
                 event.setDropCompleted(true);
             } else {
                 event.setDropCompleted(false);
@@ -171,6 +167,13 @@ public class MazeNode extends Pane {
         keyNode.setX(key.c.x * cellSizePx + lineWidthPx);
         keyNode.setY(key.c.y * cellSizePx + lineWidthPx);
         keyNode.setVisible(key.visible && !key.collected);
+    }
+
+    private void updateDoorNode() {
+        Door door = maze.getDoor();
+    	doorNode.setX(door.c.x * cellSizePx + lineWidthPx);
+    	doorNode.setY(door.c.y * cellSizePx + lineWidthPx);
+        doorNode.setOpened(door.isOpened);
     }
 
 /*
@@ -233,6 +236,7 @@ public class MazeNode extends Pane {
         updateGemNodes();
         updatePoliceNodes();
         updateKeyNode();
+        updateDoorNode();
     }
 
     

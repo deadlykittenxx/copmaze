@@ -1,4 +1,3 @@
-
 public class Door {
 	public Coordinate c;
     public boolean isOpened;

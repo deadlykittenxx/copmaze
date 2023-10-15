@@ -68,6 +68,12 @@ public class Maze {
         this.onChangeCallback = onChangeCallback;
     }
 
+    private void callCallback() {
+        if (onChangeCallback != null) {
+            onChangeCallback.run();
+        }
+    }
+
     public boolean hasWon() {
         return gameState == WON;
     }
@@ -339,15 +345,24 @@ public class Maze {
     	return key;
     }
 
+    void setKeyCollected(boolean collected) {
+        key.collected = collected;
+        callCallback();
+    }
+
     private void addDoor() {
     	Wall exit = getExit();
     	
     	door = new Door(new Coordinate(exit.c.x, exit.c.y));
     }
-   
     
     public Door getDoor() {
     	return door;
+    }
+
+    public void setDoorOpen(boolean open) {
+        door.isOpened = open;
+        callCallback();
     }
     
     private void addPolice(int nbPolice) {
@@ -388,9 +403,7 @@ public class Maze {
                         }
                     }
                     Platform.runLater(() -> {
-                        if (onChangeCallback != null) {
-                            onChangeCallback.run();
-                        }
+                        callCallback();
                     });
                 }
             }
@@ -455,9 +468,7 @@ public class Maze {
         if (door.isOpened && character.currentLocation.x == door.c.x && character.currentLocation.y == door.c.y) {
             terminateGame(WON);
         }
-        if (onChangeCallback != null) {
-            onChangeCallback.run();
-        }
+        callCallback();
     }
 
     private void terminateGame(int state) {
@@ -465,9 +476,7 @@ public class Maze {
         policeActive = false;
         policeAIExecutor.shutdownNow();
         soundDetector.stop();
-        if (onChangeCallback != null) {
-            onChangeCallback.run();
-        }
+        callCallback();
     }
 
     private void setVisitedLeft(int x, int y) {
