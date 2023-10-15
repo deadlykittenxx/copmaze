@@ -4,12 +4,28 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 
 public class SoundDetector {
-    double soundLevel;
-    byte[] buffer;
-    AudioFormat format = new AudioFormat(44100, 16, 1, true, true);
-    DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+    private double soundLevel;
+    private byte[] buffer;
+    private AudioFormat format = new AudioFormat(44100, 16, 1, true, true);
+    private DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+    private Thread loopThread;
 
-    public void soundDetectStart() {
+    public double getLevel() {
+        return soundLevel;
+    }
+
+    public void start(int intervalMs) {
+        loopThread = new Thread(() -> {
+            soundDetectLoop(intervalMs);
+        });
+        loopThread.start();
+    }
+
+    public void stop() {
+        loopThread.interrupt();
+    }
+
+    private void soundDetectLoop(int intervalMs) {
 
         if (!AudioSystem.isLineSupported(info)) {
             System.out.println("Microphone not supported.");
@@ -28,7 +44,7 @@ public class SoundDetector {
                 soundLevel = getSoundLevel(bytesRead);
                 // System.out.println("Sound level: " + soundLevel);
 
-                Thread.sleep(1000); // Interval between audio readings
+                Thread.sleep(intervalMs); // Interval between audio readings
             }
         } catch (Exception e) {
             e.printStackTrace();

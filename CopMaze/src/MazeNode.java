@@ -1,4 +1,3 @@
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
@@ -24,8 +23,6 @@ public class MazeNode extends Pane {
     private Canvas canvas;
     private Pane mazeContentPane;
 
-    private SoundDetector soundDetector = new SoundDetector();
-
     public MazeNode(Maze maze, double cellSizePx, double lineWidthPx) {
         this.canvas = new Canvas(maze.getWidth() * cellSizePx + lineWidthPx, maze.getHeight() * cellSizePx + lineWidthPx);
         mazeContentPane = new Pane();
@@ -41,15 +38,8 @@ public class MazeNode extends Pane {
         draw();
         this.getChildren().addAll(canvas, mazeContentPane);
         
-        
-        
         this.maze.setOnChangeCallback(() -> {
             update();
-            
-            if (this.maze.getNumOfGemsLeft() == 0) {
-            	// generateKeyNode();
-            }
-            
             if (maze.hasWon()) {          // when the character reaches the exit
             	System.out.println("YOU WIN");
             	AlertDialog.display("YOU WIN");
@@ -58,10 +48,6 @@ public class MazeNode extends Pane {
             	AlertDialog.display("YOU LOSE");
             }
         });
-
-        new Thread(() -> {
-            soundDetector.soundDetectStart();
-        }).start();
     }
     
 

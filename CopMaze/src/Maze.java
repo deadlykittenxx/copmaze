@@ -45,6 +45,8 @@ public class Maze {
     private boolean policeActive;
     private ScheduledExecutorService policeAIExecutor;
     private int gameState = IN_PROGRESS;
+
+    private SoundDetector soundDetector = new SoundDetector();
     
     public Maze(int width, int height, double easiness, Character character, int nbGems, int nbPolice) {
         this.character = character;
@@ -56,6 +58,7 @@ public class Maze {
         addKey();
         addDoor();
         addPolice(nbPolice);
+        soundDetector.start(200);
     }
 
     public void setOnChangeCallback(Runnable onChangeCallback) {
@@ -364,13 +367,18 @@ public class Maze {
 
         Runnable movePolice = new Runnable() {
             public void run() {
-                if (policeActive) {
+                double soundLevel = soundDetector.getLevel();
+                boolean policeScared = soundLevel >= 5000;
+                System.out.print("Sound level: " + soundLevel);
+                System.out.println(policeScared ? " (police scared)" : "");
+                if (policeActive && !policeScared) {
                     for (Police p : police) {
                         p.moveSmart(maze);
                         if (p.c.x == character.currentLocation.x && p.c.y == character.currentLocation.y) {
                             gameState = LOST;
                             policeActive = false;
                             policeAIExecutor.shutdownNow();
+                            soundDetector.stop();
                         }
                     }
                     Platform.runLater(() -> {
