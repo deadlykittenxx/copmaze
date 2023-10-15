@@ -2,14 +2,26 @@ import java.util.List;
 
 public class Police {
 	public Coordinate c;
+	public Coordinate originC;
+	public int moveTurn = 0;
+	public int turnShift;
 	
-    Police(Coordinate c) {
+    Police(Coordinate c, int maxTurnShift) {
         this.c = c;
-        
+        originC = c;
+		turnShift = (int) (Math.random() * (maxTurnShift+1));
     }
     
-    public Coordinate moveSmart(Maze maze) {
+    public Coordinate moveToPlayer(Maze maze) {
 		List<Coordinate> path = maze.shortestPath(c, maze.getCharacter().currentLocation);
+		if (!path.isEmpty()) {
+			c = path.get(0);
+		}
+		return c;
+    }
+    
+    public Coordinate moveToOrigin(Maze maze) {
+		List<Coordinate> path = maze.shortestPath(c, originC);
 		if (!path.isEmpty()) {
 			c = path.get(0);
 		}

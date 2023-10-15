@@ -6,8 +6,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 
 class Wall {
     public Coordinate c;
@@ -19,6 +17,11 @@ class Wall {
 }
 
 public class Maze {
+    static final int SOUND_LEVEL_POLICE_SCARED = 15000;
+    static final int POLICE_GO_TO_PLAYER = 20; // Number of turns during which the police goes to the player
+    static final int POLICE_GO_TO_ORIGIN = 10; // Number of turns during which the police goes to their origin
+    static final int TOTAL_POLICE_TURNS = POLICE_GO_TO_PLAYER + POLICE_GO_TO_ORIGIN;
+
     static final int LEFT = 1;
     static final int BOTTOM = 2;
     static final int RIGHT = 4;
@@ -358,7 +361,7 @@ public class Maze {
             if ((maze[x][y] & GEM) == 0 &&
               (playerCoordinate.x != x || playerCoordinate.y != y) &&
               (door.c.x != x || door.c.y != y)) {
-                police[i] = new Police(new Coordinate(x, y));
+                police[i] = new Police(new Coordinate(x, y), POLICE_GO_TO_PLAYER-5);
                 i++;
             }
         }
@@ -368,17 +371,20 @@ public class Maze {
         Runnable movePolice = new Runnable() {
             public void run() {
                 double soundLevel = soundDetector.getLevel();
-                boolean policeScared = soundLevel >= 5000;
+                boolean policeScared = soundLevel >= SOUND_LEVEL_POLICE_SCARED;
                 System.out.print("Sound level: " + soundLevel);
                 System.out.println(policeScared ? " (police scared)" : "");
                 if (policeActive && !policeScared) {
                     for (Police p : police) {
-                        p.moveSmart(maze);
+                        int turn = (p.moveTurn + p.turnShift) % TOTAL_POLICE_TURNS;
+                        if (turn < POLICE_GO_TO_PLAYER) {
+                            p.moveToPlayer(maze);
+                        } else {
+                            p.moveToOrigin(maze);
+                        }
+                        p.moveTurn++;
                         if (p.c.x == character.currentLocation.x && p.c.y == character.currentLocation.y) {
-                            gameState = LOST;
-                            policeActive = false;
-                            policeAIExecutor.shutdownNow();
-                            soundDetector.stop();
+                            terminateGame(LOST);
                         }
                     }
                     Platform.runLater(() -> {
@@ -443,14 +449,22 @@ public class Maze {
         collectGem(character.currentLocation.x, character.currentLocation.y);
         for (Police p : police) {
             if (p.c.x == character.currentLocation.x && p.c.y == character.currentLocation.y) {
-                gameState = LOST;
-                policeActive = false;
-                policeAIExecutor.shutdownNow();
+                terminateGame(LOST);
             }
         }
         if (door.isOpened && character.currentLocation.x == door.c.x && character.currentLocation.y == door.c.y) {
-            gameState = WON;
+            terminateGame(WON);
         }
+        if (onChangeCallback != null) {
+            onChangeCallback.run();
+        }
+    }
+
+    private void terminateGame(int state) {
+        gameState = state;
+        policeActive = false;
+        policeAIExecutor.shutdownNow();
+        soundDetector.stop();
         if (onChangeCallback != null) {
             onChangeCallback.run();
         }
