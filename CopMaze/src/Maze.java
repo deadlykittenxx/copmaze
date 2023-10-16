@@ -18,6 +18,7 @@ class Wall {
 
 public class Maze {
     static final int SOUND_LEVEL_POLICE_SCARED = 12000;
+    static final int MIN_DISTANCE_PLAYER_POLICE = 10;
     static final int POLICE_GO_TO_PLAYER = 20; // Number of turns during which the police goes to the player
     static final int POLICE_GO_TO_ORIGIN = 10; // Number of turns during which the police goes to their origin
     static final int TOTAL_POLICE_TURNS = POLICE_GO_TO_PLAYER + POLICE_GO_TO_ORIGIN;
@@ -373,9 +374,12 @@ public class Maze {
             int y = (int) (Math.random() * getHeight());
             Coordinate playerCoordinate = character.currentLocation;
             
+            int distanceToPlayer = Math.abs(character.currentLocation.x - x) + Math.abs(character.currentLocation.y - y);
+            
             if ((maze[x][y] & GEM) == 0 &&
               (playerCoordinate.x != x || playerCoordinate.y != y) &&
-              (door.c.x != x || door.c.y != y)) {
+              (door.c.x != x || door.c.y != y) &&
+              distanceToPlayer > MIN_DISTANCE_PLAYER_POLICE) {
                 police[i] = new Police(new Coordinate(x, y), POLICE_GO_TO_PLAYER-5);
                 i++;
             }
