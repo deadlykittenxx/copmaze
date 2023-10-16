@@ -145,5 +145,13 @@
     	-fx-background-size: cover;
 }
 
+#mazeScene #tags{
+-fx-background-color: transparent;
+    -fx-background-image: url(/resources/image/tag.png);
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: stretch;
+    -fx-text-fill: black;
+}
 
 

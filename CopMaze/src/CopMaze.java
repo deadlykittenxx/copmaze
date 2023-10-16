@@ -277,9 +277,11 @@ public class CopMaze extends Application {
 		mazeNode.setMaxWidth(maze.getWidth()*GRID_SIZE + BORDER_SIZE);
 		mazeNode.setMaxHeight(maze.getHeight()*GRID_SIZE + BORDER_SIZE);
 		numOfGems = new Label("Gems Left: " + maze.getNumOfGemsLeft());
-
+		numOfGems.setPadding(new Insets(7, 15, 7, 15));
 		keyCollect = new Label("You need to get a Key.");
-
+		keyCollect.setPadding(new Insets(7, 15, 7, 15));
+		keyCollect.setId("tags");
+		numOfGems.setId("tags");
 		Region region1 = new Region();
 		HBox.setHgrow(region1, Priority.ALWAYS);
 

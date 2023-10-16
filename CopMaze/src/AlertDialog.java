@@ -24,14 +24,17 @@ public class AlertDialog {
 
 		layout.setAlignment(Pos.CENTER);
 		layout.setPadding(new Insets(50));
-		layout.setStyle("-fx-background-color: black;");
+
 		VBox.setMargin(label, new Insets(0, 0, 20, 0));
 		if(str.equals("YOU LOSE")){
+			layout.setStyle("-fx-background-color: black;");
 			label.setStyle("-fx-text-fill: red; -fx-font-size: 50; -fx-font-family: 'Pixel Script';");
+			goBackBtn.setStyle("-fx-text-fill: white; -fx-font-family: 'DePixel'; -fx-font-size: 12; -fx-background-color: transparent;");
 		} else {
-			label.setStyle("-fx-text-fill: white; -fx-font-size: 50; -fx-font-family: 'Pixel Script';");
+			layout.setStyle("-fx-background-image: url(/resources/image/backgroundWin.png); -fx-background-repeat: no-repeat; -fx-background-position: center; -fx-background-size: stretch;");
+			label.setStyle("-fx-text-fill: black; -fx-font-size: 50; -fx-font-family: 'Pixel Script';");
+			goBackBtn.setStyle("-fx-text-fill: black; -fx-font-family: 'DePixel'; -fx-font-size: 12; -fx-background-color: transparent;");
 		}
-		goBackBtn.setStyle("-fx-text-fill: white; -fx-font-family: 'DePixel'; -fx-font-size: 12; -fx-background-color: transparent;");
 		stage.show();
 
 	}
