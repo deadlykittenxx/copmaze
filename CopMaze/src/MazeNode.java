@@ -79,9 +79,9 @@ public class MazeNode extends Pane {
     
     private void generateKeyNode() {
     	Key key = maze.getKey();
-    	keyNode = new KeyNode((int)cellContentPx, (int)cellContentPx);
+    	keyNode = new KeyNode((int)cellContentPx-2, (int)cellContentPx-6);
     	keyNode.setX(key.c.x * cellSizePx + lineWidthPx);
-    	keyNode.setY(key.c.y * cellSizePx + lineWidthPx);
+    	keyNode.setY(key.c.y * cellSizePx + lineWidthPx + 4);
     	keyNode.setVisible(key.visible && !key.collected);
     	mazeContentPane.getChildren().add(keyNode);
             	
@@ -93,6 +93,9 @@ public class MazeNode extends Pane {
 
             ClipboardContent content = new ClipboardContent();
             content.putString("door open");
+
+
+
             db.setContent(content);
         });
         keyNode.setOnMouseDragged((MouseEvent event) -> {
@@ -115,7 +118,7 @@ public class MazeNode extends Pane {
     
     private void generateDoorNode() {
     	Door door = maze.getDoor();
-    	doorNode = new DoorNode((int)cellContentPx, (int)cellContentPx);
+    	doorNode = new DoorNode((int)cellContentPx-10, (int)cellContentPx);
     	doorNode.setX(door.c.x * cellSizePx + lineWidthPx);
     	doorNode.setY(door.c.y * cellSizePx + lineWidthPx);
         doorNode.setOpened(door.isOpened);
@@ -138,6 +141,7 @@ public class MazeNode extends Pane {
                 maze.setDoorOpen(true);
                 maze.setKeyCollected(true);
                 event.setDropCompleted(true);
+
             } else {
                 event.setDropCompleted(false);
             }
@@ -160,6 +164,7 @@ public class MazeNode extends Pane {
             policeNodes[i].setX(police[i].c.x * cellSizePx + lineWidthPx);
             policeNodes[i].setY(police[i].c.y * cellSizePx + lineWidthPx);
         }
+
     }
 
     private void updateKeyNode() {

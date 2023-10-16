@@ -91,10 +91,10 @@
 }
 
 #initScene {
-	-fx-background-image: url(/resources/image/background02.png);
+	-fx-background-image: url(/resources/image/background.png);
 	-fx-background-repeat: no-repeat;
 	-fx-background-position: center;
-	-fx-background-size: cover;
+	-fx-background-size: stretch;
 }
 
 #characterScene, #levelScene{
@@ -126,7 +126,32 @@
 
 #mazeScene .label{
 	-fx-font-family: 'DePixel';
+	-fx-text-fill: black;
 }
 
+#mazeScene #levelLabel{
+    -fx-background-color: transparent;
+    -fx-background-image: url(/resources/image/buttonLabel.png);
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: stretch;
+    -fx-text-fill: black;
+    -fx-font-size: 26;
+}
+
+#mazeScene{
+    	-fx-background-repeat: no-repeat;
+    	-fx-background-position: center;
+    	-fx-background-size: cover;
+}
+
+#mazeScene #tags{
+-fx-background-color: transparent;
+    -fx-background-image: url(/resources/image/tag.png);
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: stretch;
+    -fx-text-fill: black;
+}
 
 

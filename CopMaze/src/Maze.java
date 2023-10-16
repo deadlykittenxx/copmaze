@@ -429,6 +429,10 @@ public class Maze {
         if (hasTopWall(character.currentLocation.x, character.currentLocation.y)) {
             return false;
         }
+
+        if(character.currentLocation.x == exit.c.x && character.currentLocation.y == exit.c.y){
+            if(character.currentLocation.y == 0) return false;
+        }
         moveCharacter(0, -1);
         return true;
     }
@@ -437,6 +441,11 @@ public class Maze {
         if (hasBottomWall(character.currentLocation.x, character.currentLocation.y)) {
             return false;
         }
+
+        if(character.currentLocation.x == exit.c.x && character.currentLocation.y == exit.c.y){
+            if(character.currentLocation.y == (getHeight()-1)) return false;
+        }
+
         moveCharacter(0, 1);
         return true;
     }
@@ -445,6 +454,11 @@ public class Maze {
         if (hasLeftWall(character.currentLocation.x, character.currentLocation.y)) {
             return false;
         }
+
+        if(character.currentLocation.x == exit.c.x && character.currentLocation.y == exit.c.y){
+            if(character.currentLocation.x == 0) return false;
+        }
+
         moveCharacter(-1, 0);
         return true;
     }
@@ -453,6 +467,11 @@ public class Maze {
         if (hasRightWall(character.currentLocation.x, character.currentLocation.y)) {
             return false;
         }
+
+        if(character.currentLocation.x == exit.c.x && character.currentLocation.y == exit.c.y){
+            if(character.currentLocation.x == (maze.length - 1)) return false;
+        }
+
         moveCharacter(1, 0);
         return true;
     }
