@@ -11,12 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -26,9 +21,9 @@ import javafx.stage.Stage;
 public class CopMaze extends Application {
 
 	public static final int WIDTH = 720;
-	public static final int HEIGHT = 640;
+	public static final int HEIGHT = 720;
 
-	public static final int GRID_SIZE = 35; // Number of pixels per cell
+	public static final int GRID_SIZE = 30; // Number of pixels per cell
 	private static final int BORDER_SIZE = 2;
 
 	private static final CharacterInfo[] CHARACTERS_INFO = new CharacterInfo[] {
@@ -63,6 +58,7 @@ public class CopMaze extends Application {
 	private String[] contentOfRule = new String[8];
 	private Text txtRule;
 	private Label numOfGems;
+	public static Label keyCollect;
 	private int howToPlayStep = 0;
 
 	private Character player;
@@ -136,6 +132,7 @@ public class CopMaze extends Application {
 				}
 				
 				updateGemsLabel();
+				updateKeyLabel();
 			}
 		};
 		
@@ -218,8 +215,8 @@ public class CopMaze extends Application {
 		btnGoBack.setId("BtnGoBack");
 		topPane.getChildren().add(btnGoBack);
 		topPane.setPrefHeight(30);
-		AnchorPane.setTopAnchor(btnGoBack, 25.0);
-		AnchorPane.setLeftAnchor(btnGoBack, 25.0);
+		AnchorPane.setTopAnchor(btnGoBack, 30.0);
+		AnchorPane.setLeftAnchor(btnGoBack, 30.0);
 		return topPane;
 	}
 	
@@ -250,8 +247,17 @@ public class CopMaze extends Application {
 	
 	public void updateGemsLabel() {
 		numOfGems.setText("Gems Left: " + maze.getNumOfGemsLeft());
+
 	}
-	
+
+
+	public void updateKeyLabel() {
+		if(maze.getNumOfGemsLeft() == 0 && maze.getDoor().isOpened == false) {
+			keyCollect.setText("Open the door with Key.");
+		} else if(maze.getDoor().isOpened == true) {
+			keyCollect.setText("Door Opened ! ");
+		}
+	}
 	/*
 	 * Game Scene
 	 */
@@ -260,16 +266,37 @@ public class CopMaze extends Application {
 		
 		
 		maze = new Maze(difficultyLevel.mazeWidth, difficultyLevel.mazeHeight, difficultyLevel.easiness, player, difficultyLevel.nbGems, difficultyLevel.nbPolice);
-		
+
+		Label label = new Label(difficultyLevel.name);
+		label.setId("levelLabel");
+		label.setPadding(new Insets(0, 25, 15, 25));
+		label.setPrefSize(320, 60);
+		label.setAlignment(Pos.CENTER);
+
 		MazeNode mazeNode = new MazeNode(maze, GRID_SIZE, BORDER_SIZE);
 		mazeNode.setMaxWidth(maze.getWidth()*GRID_SIZE + BORDER_SIZE);
 		mazeNode.setMaxHeight(maze.getHeight()*GRID_SIZE + BORDER_SIZE);
 		numOfGems = new Label("Gems Left: " + maze.getNumOfGemsLeft());
-		
+
+		keyCollect = new Label("You need to get a Key.");
+
+		Region region1 = new Region();
+		HBox.setHgrow(region1, Priority.ALWAYS);
+
+		Region region2 = new Region();
+		HBox.setHgrow(region2, Priority.ALWAYS);
+
+
+		HBox tags = new HBox(numOfGems, region1, keyCollect, region2);
+		tags.setPadding(new Insets(0, 0, 40, (WIDTH-(maze.getWidth()*GRID_SIZE + BORDER_SIZE))/2));
+
 		mazeScene.setOnKeyPressed(characterListener);
-		
+		BorderPane.setAlignment(label, Pos.BOTTOM_CENTER);
+		BorderPane.setAlignment(tags, Pos.TOP_CENTER);
+		BorderPane.setMargin(label, new Insets(40, 0, 0, 0));
+		root.setTop(label);
 		root.setCenter(mazeNode);
-		root.setBottom(numOfGems);
+		root.setBottom(tags);
 	}
 	
 	/*
@@ -383,9 +410,9 @@ public class CopMaze extends Application {
 		
 		lblRule = new Label("How to play!");
 		lblRule.setId("subTitle");
-		VBox.setMargin(lblRule, new Insets(-50, 0, 0, 0));
+		VBox.setMargin(lblRule, new Insets(-30, 0, 0, 0));
 		
-		Rectangle rectangle = new Rectangle(430, 250);
+		Rectangle rectangle = new Rectangle(430, 350);
 		rectangle.setId("Box");
 		rectangle.setFill(new ImagePattern(img));
 		rectangle.setArcHeight(30);
@@ -393,13 +420,12 @@ public class CopMaze extends Application {
 		rectangle.setStroke(Color.TRANSPARENT);
 
 		contentOfRule[0] = "1. Move around the maze and collect all the gems."
-				+"\n\n2. You should avoid policmen while moving around."
+				+"\n\n2. You should avoid policemen while moving around."
 				+"\n\n3. When the key appears, go get it."
 				+"\n\n4. Drag the key and drop it to the door to unlock it.";
-		contentOfRule[1] = "1. Move around with keyborad arrows."
-				+"\n\n2. Put light on the camera to look further at night."
-				+"\n\n3. Smash the space bar to use Hide Mode.";
-		contentOfRule[2] = "You only have 2 days \nto steal the gems and escape!";
+		contentOfRule[1] = "1. Move around with keyboard arrows."
+				+"\n\n2. You need to scream to avoid policemen.";
+		contentOfRule[2] = "There are more policemen and gems depends on the level.";
 
 		txtRule = new Text();
 		txtRule.setId("Boxtxt");

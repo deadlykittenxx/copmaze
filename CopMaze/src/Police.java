@@ -5,7 +5,7 @@ public class Police {
 	public Coordinate originC;
 	public int moveTurn = 0;
 	public int turnShift;
-	
+
     Police(Coordinate c, int maxTurnShift) {
         this.c = c;
         originC = c;
