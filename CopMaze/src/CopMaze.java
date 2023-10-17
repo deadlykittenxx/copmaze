@@ -1,5 +1,3 @@
-
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,56 +16,192 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * The main class for the Cop Maze game application. This class extends the
+ * JavaFX Application class and serves as the entry point for the game.
+ */
 public class CopMaze extends Application {
-
+	/**
+     * The width of the game window.
+     */
 	public static final int WIDTH = 720;
+	
+	/**
+     * The height of the game window.
+     */
 	public static final int HEIGHT = 720;
 
-	public static final int GRID_SIZE = 30; // Number of pixels per cell
+	 /**
+     * The size of each grid cell in pixels.
+     */
+	public static final int GRID_SIZE = 30; 
+	
+	/**
+     * The size of the border around cells.
+     */
 	private static final int BORDER_SIZE = 2;
-
-	private static final CharacterInfo[] CHARACTERS_INFO = new CharacterInfo[] {
-		new CharacterInfo("Bonnie", 0),
-		new CharacterInfo("Clyde", 1)
-	};
-
+	
+	 /**
+     * An array of character information for character selection in the game.
+     */
+	private static final CharacterInfo[] CHARACTERS_INFO = new CharacterInfo[] { 
+			new CharacterInfo("Bonnie", 0),
+			new CharacterInfo("Clyde", 1) };
+	
+	/**
+     * An array of predefined game difficulty levels.
+     */
 	private static final DifficultyLevel[] DIFFICULTY_LEVELS = new DifficultyLevel[] {
-		new DifficultyLevel("Easy", 3, 1, 2, 18, 14, 0.3, 100),
-		new DifficultyLevel("Hard", 5, 2, 2, 20, 15, 0.2, 100),
-		new DifficultyLevel("Super Hard", 7, 3, 2, 22, 16, 0.1, 150)
-	};
-
+			new DifficultyLevel("Easy", 3, 1, 2, 18, 14, 0.3, 100),
+			new DifficultyLevel("Hard", 5, 2, 2, 20, 15, 0.2, 100),
+			new DifficultyLevel("Super Hard", 7, 3, 2, 22, 16, 0.1, 150) };
+	
+	/**
+     * The initial scene for the game (main menu).
+     */
 	private Scene initScene;
-	private Scene characterScene;
-	private Scene levelScene;
-	private Scene mazeScene;
-	private Scene ruleScene;
-	private BorderPane mazeRoot;
-	private EventHandler<ActionEvent> btnStartListener;
-	private EventHandler<ActionEvent> btnHowtoPlayListener;
-	private EventHandler<ActionEvent> btnCharacterListener;
-	private EventHandler<ActionEvent> btnLevelListener;
-	private EventHandler<ActionEvent> btnRuleNextListener;
-	private EventHandler<ActionEvent> btnRulePreviousListener;
-	public static EventHandler<ActionEvent> btnGoBackListener;
-	private EventHandler<KeyEvent> characterListener;
-	private Button btnGoBack;
-	private Button btnRuleNext;
-	private Button btnRulePrevious;
-	private Label lblRule;
-	private String[] contentOfRule = new String[8];
-	private Text txtRule;
-	private Label numOfGems;
-	public static Label keyCollect;
-	private int howToPlayStep = 0;
 
+    /**
+     * The scene for character selection.
+     */
+	private Scene characterScene;
+	
+	 /**
+     * The scene for selecting the game level.
+     */
+	private Scene levelScene;
+	
+	 /**
+     * The root layout for the main game scene.
+     */
+	private Scene mazeScene;
+	
+	 /**
+     * The scene for displaying game rules.
+     */
+	private Scene ruleScene;
+	
+	/**
+     * The root layout for the main game scene.
+     */
+	private BorderPane mazeRoot;
+	
+	 /**
+     * Event handler for the "Start" button.
+     */
+	private EventHandler<ActionEvent> btnStartListener;
+	
+	/**
+     * Event handler for the "How to Play" button.
+     */
+	private EventHandler<ActionEvent> btnHowtoPlayListener;
+	
+	/**
+     * Event handler for the "Character" button.
+     */
+	private EventHandler<ActionEvent> btnCharacterListener;
+	
+	/**
+     * Event handler for the "Level" button.
+     */
+	private EventHandler<ActionEvent> btnLevelListener;
+	
+	 /**
+     * Event handler for the "Next" button in the rule scene.
+     */
+	private EventHandler<ActionEvent> btnRuleNextListener;
+	
+	 /**
+     * Event handler for the "Previous" button in the rule scene.
+     */
+	private EventHandler<ActionEvent> btnRulePreviousListener;
+	
+	 /**
+     * Event handler for the "Go Back" button.
+     */
+	public static EventHandler<ActionEvent> btnGoBackListener;
+	
+	/**
+     * Event handler for keyboard input during character movement.
+     */
+	private EventHandler<KeyEvent> characterListener;
+	
+	 /**
+     * The "Go Back" button for navigating back to the previous scene.
+     */
+	private Button btnGoBack;
+	
+	/**
+     * The "Next" button for navigating to the next rule in the rule scene.
+     */
+	private Button btnRuleNext;
+	
+	/**
+     * The "Previous" button for navigating to the previous rule in the rule scene.
+     */
+	private Button btnRulePrevious;
+	
+	/**
+     * The label displaying game rules in the rule scene.
+     */
+	private Label lblRule;
+	
+	 /**
+     * An array of strings containing the content of game rules.
+     */
+	private String[] contentOfRule = new String[8];
+	
+	 /**
+     * The text component for displaying game rules.
+     */
+	private Text txtRule;
+	
+	 /**
+     * The label displaying the number of remaining gems in the game.
+     */
+	private Label numOfGems;
+	
+	/**
+     * The label indicating the status of collecting a key to open the door.
+     */
+	public static Label keyCollect;
+	
+    /**
+     * The current step in the "How to Play" rules.
+     */
+	private int howToPlayStep = 0;
+	
+	/**
+     * The selected player character.
+     */
 	private Character player;
+	
+	/**
+     * The selected game difficulty level.
+     */
 	private DifficultyLevel difficultyLevel;
+	
+	/**
+	 * The game's maze, representing the game world.
+	 */
 	private Maze maze;
+
+	/**
+	 * The main entry point for the JavaFX application.
+	 *
+	 * @param args The command-line arguments passed to the application.
+	 * @throws Exception If an exception occurs during application initialization.
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 
+	/**
+	 * Initializes the game application and sets up the initial scene.
+	 *
+	 * @param primaryStage The primary stage where the game is displayed.
+	 * @throws Exception If an exception occurs during the initialization.
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
@@ -77,16 +211,16 @@ public class CopMaze extends Application {
 
 		BorderPane characterRoot = new BorderPane();
 		characterScene = new Scene(characterRoot);
-		
+
 		BorderPane levelRoot = new BorderPane();
 		levelScene = new Scene(levelRoot);
-		
+
 		BorderPane ruleRoot = new BorderPane();
 		ruleScene = new Scene(ruleRoot);
-		
+
 		mazeRoot = new BorderPane();
 		mazeScene = new Scene(mazeRoot);
-		//mazeRoot.setAlignment(Pos.CENTER);
+		// mazeRoot.setAlignment(Pos.CENTER);
 
 		initListener(primaryStage);
 
@@ -107,17 +241,17 @@ public class CopMaze extends Application {
 		primaryStage.setHeight(HEIGHT);
 		primaryStage.setScene(initScene);
 		primaryStage.show();
-		
+
 	}
 
 	/*
 	 * Initialize the listeners
 	 */
 	public void initListener(Stage stage) {
-		
+
 		/*
-		 *	Character moving
-		 * */
+		 * Character moving
+		 */
 		characterListener = new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent e) {
@@ -125,17 +259,17 @@ public class CopMaze extends Application {
 					maze.moveCharacterRight();
 				} else if (e.getCode().equals(KeyCode.LEFT)) {
 					maze.moveCharacterLeft();
-				} else if(e.getCode().equals(KeyCode.UP)) {
+				} else if (e.getCode().equals(KeyCode.UP)) {
 					maze.moveCharacterUp();
-				} else if(e.getCode().equals(KeyCode.DOWN)) {
+				} else if (e.getCode().equals(KeyCode.DOWN)) {
 					maze.moveCharacterDown();
 				}
-				
+
 				updateGemsLabel();
 				updateKeyLabel();
 			}
 		};
-		
+
 		btnLevelListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
@@ -193,7 +327,7 @@ public class CopMaze extends Application {
 				}
 			}
 		};
-		
+
 		btnGoBackListener = new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
@@ -204,7 +338,7 @@ public class CopMaze extends Application {
 		};
 
 	}
-	
+
 	/*
 	 * Generating BackButtonBar
 	 */
@@ -219,7 +353,7 @@ public class CopMaze extends Application {
 		AnchorPane.setLeftAnchor(btnGoBack, 30.0);
 		return topPane;
 	}
-	
+
 	/*
 	 * Update RuleGUI
 	 */
@@ -244,28 +378,36 @@ public class CopMaze extends Application {
 
 		}
 	}
-	
+
+	/**
+	 * Updates the label displaying the number of remaining gems in the game.
+	 */
 	public void updateGemsLabel() {
 		numOfGems.setText("Gems Left: " + maze.getNumOfGemsLeft());
 
 	}
 
-
+	/**
+	 * Updates the label displaying the status of key collection and door opening.
+	 */
 	public void updateKeyLabel() {
-		if(maze.getNumOfGemsLeft() == 0 && maze.getDoor().isOpened == false) {
+		if (maze.getNumOfGemsLeft() == 0 && maze.getDoor().isOpened == false) {
 			keyCollect.setText("Open the door with Key.");
-		} else if(maze.getDoor().isOpened == true) {
+		} else if (maze.getDoor().isOpened == true) {
 			keyCollect.setText("Door Opened ! ");
 		}
 	}
-	/*
-	 * Game Scene
+
+	/**
+	 * Displays the main game screen with the maze.
+	 *
+	 * @param root The root BorderPane where the game content is placed.
 	 */
 	public void mazeGUI(BorderPane root) {
 		root.setId("mazeScene");
-		
-		
-		maze = new Maze(difficultyLevel.mazeWidth, difficultyLevel.mazeHeight, difficultyLevel.easiness, player, difficultyLevel.nbGems, difficultyLevel.nbPolice);
+
+		maze = new Maze(difficultyLevel.mazeWidth, difficultyLevel.mazeHeight, difficultyLevel.easiness, player,
+				difficultyLevel.nbGems, difficultyLevel.nbPolice);
 
 		Label label = new Label(difficultyLevel.name);
 		label.setId("levelLabel");
@@ -274,8 +416,8 @@ public class CopMaze extends Application {
 		label.setAlignment(Pos.CENTER);
 
 		MazeNode mazeNode = new MazeNode(maze, GRID_SIZE, BORDER_SIZE);
-		mazeNode.setMaxWidth(maze.getWidth()*GRID_SIZE + BORDER_SIZE);
-		mazeNode.setMaxHeight(maze.getHeight()*GRID_SIZE + BORDER_SIZE);
+		mazeNode.setMaxWidth(maze.getWidth() * GRID_SIZE + BORDER_SIZE);
+		mazeNode.setMaxHeight(maze.getHeight() * GRID_SIZE + BORDER_SIZE);
 		numOfGems = new Label("Gems Left: " + maze.getNumOfGemsLeft());
 		numOfGems.setPadding(new Insets(7, 15, 7, 15));
 		keyCollect = new Label("You need to get a Key.");
@@ -288,9 +430,8 @@ public class CopMaze extends Application {
 		Region region2 = new Region();
 		HBox.setHgrow(region2, Priority.ALWAYS);
 
-
 		HBox tags = new HBox(numOfGems, region1, keyCollect, region2);
-		tags.setPadding(new Insets(0, 0, 40, (WIDTH-(maze.getWidth()*GRID_SIZE + BORDER_SIZE))/2));
+		tags.setPadding(new Insets(0, 0, 40, (WIDTH - (maze.getWidth() * GRID_SIZE + BORDER_SIZE)) / 2));
 
 		mazeScene.setOnKeyPressed(characterListener);
 		BorderPane.setAlignment(label, Pos.BOTTOM_CENTER);
@@ -300,13 +441,14 @@ public class CopMaze extends Application {
 		root.setCenter(mazeNode);
 		root.setBottom(tags);
 	}
-	
-	/*
-	 * Initalize the first Scene
+
+	/**
+	 * Initializes the initial scene of the game.
+	 *
+	 * @param root The root VBox where the initial menu options are placed.
 	 */
 	public void initGUI(VBox root) {
 		root.setId("initScene");
-
 
 		Button btnHowtoPlay = new Button("How to Play");
 		btnHowtoPlay.setPrefSize(120, 30);
@@ -324,20 +466,19 @@ public class CopMaze extends Application {
 		root.getChildren().addAll(btnHowtoPlay, btnStart);
 		VBox.setMargin(btnHowtoPlay, new Insets(100, 0, 0, 0));
 	}
-	
-	
-	/*
-	 * Choose Character
-	 */
 
+	/**
+	 * Displays the character selection screen.
+	 *
+	 * @param root The root BorderPane where character selection options are placed.
+	 */
 	public void characterGUI(BorderPane root) {
 		root.setId("characterScene");
 		VBox menu = new VBox();
 		menu.setAlignment(Pos.CENTER);
 		Label label = new Label("Choose Your Character!");
 		label.setId("subTitle");
-		
-		
+
 		HBox charactersPanelBox = new HBox();
 
 		for (CharacterInfo ci : CHARACTERS_INFO) {
@@ -357,22 +498,23 @@ public class CopMaze extends Application {
 			HBox.setMargin(characterBox, new Insets(0, 10, 0, 0));
 			charactersPanelBox.getChildren().add(characterBox);
 		}
-		
+
 		charactersPanelBox.setAlignment(Pos.CENTER);
-	
+
 		menu.getChildren().addAll(label, charactersPanelBox);
-		
+
 		/* Set Margins */
 		VBox.setMargin(label, new Insets(-70, 0, 0, 0));
-		
+
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
 	}
-	
-	/*
-	 * Choose Level
-	 */
 
+	/**
+	 * Displays the level selection screen.
+	 *
+	 * @param root The root BorderPane where level selection options are placed.
+	 */
 	public void levelGUI(BorderPane root) {
 		root.setId("levelScene");
 		VBox menu = new VBox();
@@ -392,28 +534,29 @@ public class CopMaze extends Application {
 			btnLevel.setOnAction(btnLevelListener);
 			menu.getChildren().add(btnLevel);
 		}
-		
+
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
 	}
-	
-	/*
-	 * Show Rules
+
+	/**
+	 * Displays the rules and how-to-play screen.
+	 *
+	 * @param root The root BorderPane where the rules and instructions are
+	 *             displayed.
 	 */
-	
 	public void ruleGUI(BorderPane root) {
 		root.setId("ruleScene");
 		Image img = new Image("/resources/image/sketch.png");
-		
-		
+
 		VBox menu = new VBox(15);
 		menu.setAlignment(Pos.CENTER);
 		menu.setPadding(new Insets(15));
-		
+
 		lblRule = new Label("How to play!");
 		lblRule.setId("subTitle");
 		VBox.setMargin(lblRule, new Insets(-30, 0, 0, 0));
-		
+
 		Rectangle rectangle = new Rectangle(430, 350);
 		rectangle.setId("Box");
 		rectangle.setFill(new ImagePattern(img));
@@ -422,11 +565,9 @@ public class CopMaze extends Application {
 		rectangle.setStroke(Color.TRANSPARENT);
 
 		contentOfRule[0] = "1. Move around the maze and collect all the gems."
-				+"\n\n2. You should avoid policemen while moving around."
-				+"\n\n3. When the key appears, go get it."
-				+"\n\n4. Drag the key and drop it to the door to unlock it.";
-		contentOfRule[1] = "1. Move around with keyboard arrows."
-				+"\n\n2. You need to scream to avoid policemen.";
+				+ "\n\n2. You should avoid policemen while moving around." + "\n\n3. When the key appears, go get it."
+				+ "\n\n4. Drag the key and drop it to the door to unlock it.";
+		contentOfRule[1] = "1. Move around with keyboard arrows." + "\n\n2. You need to scream to avoid policemen.";
 		contentOfRule[2] = "There are more policemen and gems depends on the level.";
 
 		txtRule = new Text();
@@ -446,44 +587,106 @@ public class CopMaze extends Application {
 		btnRuleNext.setId("btnForward");
 		btnRuleNext.setOnAction(btnRuleNextListener);
 		HBox rulesScreen = new HBox();
-		
-		rulesScreen.setAlignment(Pos.CENTER); 
+
+		rulesScreen.setAlignment(Pos.CENTER);
 		rulesScreen.getChildren().addAll(btnRulePrevious, stack, btnRuleNext);
 
 		menu.getChildren().addAll(lblRule, rulesScreen);
-		
+
 		root.setCenter(menu);
 		root.setTop(getBackButtonBar());
-		
-		
-		
+
 		updateRules(0); // Set screen 0
 
 	}
 
 }
 
+/**
+ * Represents information about a character available for selection in the game.
+ */
 class CharacterInfo {
+	/**
+	 * The name of the character.
+	 */
 	public String name;
+
+	/**
+	 * The sprite ID associated with the character.
+	 */
 	public int sprite_id;
 
+	/**
+	 * Constructs a new CharacterInfo with the specified name and sprite ID.
+	 *
+	 * @param name      The name of the character.
+	 * @param sprite_id The sprite ID associated with the character.
+	 */
 	public CharacterInfo(String name, int sprite_id) {
 		this.name = name;
 		this.sprite_id = sprite_id;
 	}
 }
 
+/**
+ * Represents information about a game difficulty level, including the number of
+ * gems, police, maze size, and other settings.
+ */
 class DifficultyLevel {
+	/**
+	 * The name of the difficulty level.
+	 */
 	public String name;
-	public int nbGems;
-	public int nbPolice;
-	public int nbDays;
-	public int mazeWidth;
-	public int mazeHeight;
-	public double easiness;
-	public int buttonWidth;
 
-	public DifficultyLevel(String name, int nbGems, int nbPolice, int nbDays, int mazeWidth, int mazeHeight, double easiness, int buttonWidth) {
+	/**
+	 * The number of gems in the game.
+	 */
+	public int nbGems;
+	
+	 /**
+     * The number of police characters in the game.
+     */
+	public int nbPolice;
+	
+	/**
+     * The number of in-game days (or rounds).
+     */
+	public int nbDays;
+	
+	/**
+     * The width of the maze for this difficulty level.
+     */
+	public int mazeWidth;
+	
+	 /**
+     * The height of the maze for this difficulty level.
+     */
+	public int mazeHeight;
+	
+	/**
+     * The easiness factor for the difficulty level, affecting character behavior.
+     */
+	public double easiness;
+	
+	 /**
+     * The preferred button width for UI elements related to this difficulty level.
+     */
+	public int buttonWidth;
+	
+	/**
+     * Constructs a new DifficultyLevel with the specified settings.
+     *
+     * @param name       The name of the difficulty level.
+     * @param nbGems     The number of gems in the game.
+     * @param nbPolice   The number of police characters in the game.
+     * @param nbDays     The number of in-game days (or rounds).
+     * @param mazeWidth  The width of the maze for this difficulty level.
+     * @param mazeHeight The height of the maze for this difficulty level.
+     * @param easiness   The easiness factor affecting character behavior.
+     * @param buttonWidth The preferred button width for UI elements related to this difficulty level.
+     */
+	public DifficultyLevel(String name, int nbGems, int nbPolice, int nbDays, int mazeWidth, int mazeHeight,
+			double easiness, int buttonWidth) {
 		this.name = name;
 		this.nbGems = nbGems;
 		this.nbPolice = nbPolice;
