@@ -22,165 +22,164 @@ import javafx.stage.Stage;
  */
 public class CopMaze extends Application {
 	/**
-     * The width of the game window.
-     */
+	 * The width of the game window.
+	 */
 	public static final int WIDTH = 720;
-	
+
 	/**
-     * The height of the game window.
-     */
+	 * The height of the game window.
+	 */
 	public static final int HEIGHT = 720;
 
-	 /**
-     * The size of each grid cell in pixels.
-     */
-	public static final int GRID_SIZE = 30; 
-	
 	/**
-     * The size of the border around cells.
-     */
+	 * The size of each grid cell in pixels.
+	 */
+	public static final int GRID_SIZE = 30;
+
+	/**
+	 * The size of the border around cells.
+	 */
 	private static final int BORDER_SIZE = 2;
-	
-	 /**
-     * An array of character information for character selection in the game.
-     */
-	private static final CharacterInfo[] CHARACTERS_INFO = new CharacterInfo[] { 
-			new CharacterInfo("Bonnie", 0),
-			new CharacterInfo("Clyde", 1) };
-	
+
 	/**
-     * An array of predefined game difficulty levels.
-     */
+	 * An array of character information for character selection in the game.
+	 */
+	private static final CharacterInfo[] CHARACTERS_INFO = new CharacterInfo[] { new CharacterInfo("Bonnie", 0),
+			new CharacterInfo("Clyde", 1) };
+
+	/**
+	 * An array of predefined game difficulty levels.
+	 */
 	private static final DifficultyLevel[] DIFFICULTY_LEVELS = new DifficultyLevel[] {
 			new DifficultyLevel("Easy", 3, 1, 2, 18, 14, 0.3, 100),
 			new DifficultyLevel("Hard", 5, 2, 2, 20, 15, 0.2, 100),
 			new DifficultyLevel("Super Hard", 7, 3, 2, 22, 16, 0.1, 150) };
-	
+
 	/**
-     * The initial scene for the game (main menu).
-     */
+	 * The initial scene for the game (main menu).
+	 */
 	private Scene initScene;
 
-    /**
-     * The scene for character selection.
-     */
+	/**
+	 * The scene for character selection.
+	 */
 	private Scene characterScene;
-	
-	 /**
-     * The scene for selecting the game level.
-     */
+
+	/**
+	 * The scene for selecting the game level.
+	 */
 	private Scene levelScene;
-	
-	 /**
-     * The root layout for the main game scene.
-     */
+
+	/**
+	 * The root layout for the main game scene.
+	 */
 	private Scene mazeScene;
-	
-	 /**
-     * The scene for displaying game rules.
-     */
+
+	/**
+	 * The scene for displaying game rules.
+	 */
 	private Scene ruleScene;
-	
+
 	/**
-     * The root layout for the main game scene.
-     */
+	 * The root layout for the main game scene.
+	 */
 	private BorderPane mazeRoot;
-	
-	 /**
-     * Event handler for the "Start" button.
-     */
+
+	/**
+	 * Event handler for the "Start" button.
+	 */
 	private EventHandler<ActionEvent> btnStartListener;
-	
+
 	/**
-     * Event handler for the "How to Play" button.
-     */
+	 * Event handler for the "How to Play" button.
+	 */
 	private EventHandler<ActionEvent> btnHowtoPlayListener;
-	
+
 	/**
-     * Event handler for the "Character" button.
-     */
+	 * Event handler for the "Character" button.
+	 */
 	private EventHandler<ActionEvent> btnCharacterListener;
-	
+
 	/**
-     * Event handler for the "Level" button.
-     */
+	 * Event handler for the "Level" button.
+	 */
 	private EventHandler<ActionEvent> btnLevelListener;
-	
-	 /**
-     * Event handler for the "Next" button in the rule scene.
-     */
+
+	/**
+	 * Event handler for the "Next" button in the rule scene.
+	 */
 	private EventHandler<ActionEvent> btnRuleNextListener;
-	
-	 /**
-     * Event handler for the "Previous" button in the rule scene.
-     */
+
+	/**
+	 * Event handler for the "Previous" button in the rule scene.
+	 */
 	private EventHandler<ActionEvent> btnRulePreviousListener;
-	
-	 /**
-     * Event handler for the "Go Back" button.
-     */
+
+	/**
+	 * Event handler for the "Go Back" button.
+	 */
 	public static EventHandler<ActionEvent> btnGoBackListener;
-	
+
 	/**
-     * Event handler for keyboard input during character movement.
-     */
+	 * Event handler for keyboard input during character movement.
+	 */
 	private EventHandler<KeyEvent> characterListener;
-	
-	 /**
-     * The "Go Back" button for navigating back to the previous scene.
-     */
+
+	/**
+	 * The "Go Back" button for navigating back to the previous scene.
+	 */
 	private Button btnGoBack;
-	
+
 	/**
-     * The "Next" button for navigating to the next rule in the rule scene.
-     */
+	 * The "Next" button for navigating to the next rule in the rule scene.
+	 */
 	private Button btnRuleNext;
-	
+
 	/**
-     * The "Previous" button for navigating to the previous rule in the rule scene.
-     */
+	 * The "Previous" button for navigating to the previous rule in the rule scene.
+	 */
 	private Button btnRulePrevious;
-	
+
 	/**
-     * The label displaying game rules in the rule scene.
-     */
+	 * The label displaying game rules in the rule scene.
+	 */
 	private Label lblRule;
-	
-	 /**
-     * An array of strings containing the content of game rules.
-     */
+
+	/**
+	 * An array of strings containing the content of game rules.
+	 */
 	private String[] contentOfRule = new String[8];
-	
-	 /**
-     * The text component for displaying game rules.
-     */
+
+	/**
+	 * The text component for displaying game rules.
+	 */
 	private Text txtRule;
-	
-	 /**
-     * The label displaying the number of remaining gems in the game.
-     */
+
+	/**
+	 * The label displaying the number of remaining gems in the game.
+	 */
 	private Label numOfGems;
-	
+
 	/**
-     * The label indicating the status of collecting a key to open the door.
-     */
+	 * The label indicating the status of collecting a key to open the door.
+	 */
 	public static Label keyCollect;
-	
-    /**
-     * The current step in the "How to Play" rules.
-     */
+
+	/**
+	 * The current step in the "How to Play" rules.
+	 */
 	private int howToPlayStep = 0;
-	
+
 	/**
-     * The selected player character.
-     */
+	 * The selected player character.
+	 */
 	private Character player;
-	
+
 	/**
-     * The selected game difficulty level.
-     */
+	 * The selected game difficulty level.
+	 */
 	private DifficultyLevel difficultyLevel;
-	
+
 	/**
 	 * The game's maze, representing the game world.
 	 */
@@ -244,8 +243,10 @@ public class CopMaze extends Application {
 
 	}
 
-	/*
-	 * Initialize the listeners
+	/**
+	 * Initializes event listeners for handling user interactions.
+	 *
+	 * @param stage The JavaFX stage where the application is running.
 	 */
 	public void initListener(Stage stage) {
 
@@ -339,8 +340,11 @@ public class CopMaze extends Application {
 
 	}
 
-	/*
-	 * Generating BackButtonBar
+	/**
+	 * Creates and returns a user interface element representing a back button bar.
+	 *
+	 * @return A JavaFX Pane containing a back button that allows users to navigate
+	 *         back to the main menu.
 	 */
 	private Pane getBackButtonBar() {
 		AnchorPane topPane = new AnchorPane();
@@ -354,8 +358,10 @@ public class CopMaze extends Application {
 		return topPane;
 	}
 
-	/*
-	 * Update RuleGUI
+	/**
+	 * Updates the display of the game rules for the How to Play screen.
+	 *
+	 * @param step The step or screen number of the rules to be displayed.
 	 */
 	void updateRules(int step) {
 		btnRulePrevious.setVisible(true);
@@ -642,49 +648,50 @@ class DifficultyLevel {
 	 * The number of gems in the game.
 	 */
 	public int nbGems;
-	
-	 /**
-     * The number of police characters in the game.
-     */
+
+	/**
+	 * The number of police characters in the game.
+	 */
 	public int nbPolice;
-	
+
 	/**
-     * The number of in-game days (or rounds).
-     */
+	 * The number of in-game days (or rounds).
+	 */
 	public int nbDays;
-	
+
 	/**
-     * The width of the maze for this difficulty level.
-     */
+	 * The width of the maze for this difficulty level.
+	 */
 	public int mazeWidth;
-	
-	 /**
-     * The height of the maze for this difficulty level.
-     */
+
+	/**
+	 * The height of the maze for this difficulty level.
+	 */
 	public int mazeHeight;
-	
+
 	/**
-     * The easiness factor for the difficulty level, affecting character behavior.
-     */
+	 * The easiness factor for the difficulty level, affecting character behavior.
+	 */
 	public double easiness;
-	
-	 /**
-     * The preferred button width for UI elements related to this difficulty level.
-     */
-	public int buttonWidth;
-	
+
 	/**
-     * Constructs a new DifficultyLevel with the specified settings.
-     *
-     * @param name       The name of the difficulty level.
-     * @param nbGems     The number of gems in the game.
-     * @param nbPolice   The number of police characters in the game.
-     * @param nbDays     The number of in-game days (or rounds).
-     * @param mazeWidth  The width of the maze for this difficulty level.
-     * @param mazeHeight The height of the maze for this difficulty level.
-     * @param easiness   The easiness factor affecting character behavior.
-     * @param buttonWidth The preferred button width for UI elements related to this difficulty level.
-     */
+	 * The preferred button width for UI elements related to this difficulty level.
+	 */
+	public int buttonWidth;
+
+	/**
+	 * Constructs a new DifficultyLevel with the specified settings.
+	 *
+	 * @param name        The name of the difficulty level.
+	 * @param nbGems      The number of gems in the game.
+	 * @param nbPolice    The number of police characters in the game.
+	 * @param nbDays      The number of in-game days (or rounds).
+	 * @param mazeWidth   The width of the maze for this difficulty level.
+	 * @param mazeHeight  The height of the maze for this difficulty level.
+	 * @param easiness    The easiness factor affecting character behavior.
+	 * @param buttonWidth The preferred button width for UI elements related to this
+	 *                    difficulty level.
+	 */
 	public DifficultyLevel(String name, int nbGems, int nbPolice, int nbDays, int mazeWidth, int mazeHeight,
 			double easiness, int buttonWidth) {
 		this.name = name;
