@@ -2,7 +2,7 @@ import javafx.scene.image.ImageView;
 
 /**
  * This class represents a custom JavaFX ImageView for displaying a gem.
- * It extends the JavaFX ImageView class.
+ * It extends the JavaFX ImageView class (view class).
  */
 public class GemNode extends ImageView {
 	/**

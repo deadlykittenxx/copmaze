@@ -2,7 +2,7 @@ import javafx.animation.PathTransition;
 import javafx.scene.shape.Path;
 
 /**
- * This class represents a custom JavaFX ImageView for displaying a police image.
+ * This class represents a custom JavaFX ImageView for displaying a police image.(view class)
  * It extends the JavaFX Sprite class.
  */
 public class PoliceNode extends Sprite{

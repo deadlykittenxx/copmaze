@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 
 /**
- * The Wall class represents a wall within the maze.
+ * The Wall class represents a wall within the maze. (model class)
  */
 class Wall {
 	/**
@@ -33,7 +33,7 @@ class Wall {
 }
 
 /**
- * The Maze class manages the maze game and its elements.
+ * The Maze class manages the maze game and its elements. (model class)
  */
 public class Maze {
 	/**

@@ -1,7 +1,7 @@
 
 /**
  * The CharacterNode class represents a custom JavaFX Sprite for displaying character images.
- * It extends the JavaFX Sprite class.
+ * It extends the JavaFX Sprite class (view class).
  */
 public class CharacterNode extends Sprite {
 	/**

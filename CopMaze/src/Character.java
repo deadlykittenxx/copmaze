@@ -1,7 +1,7 @@
 /**
  * The Character class represents a character in a game. It includes properties of a character,
  * such as their name, sprite ID, health points, owned gems,
- * possession of a key, and current location.
+ * possession of a key, and current location (model class).
  */
 public class Character {
 	/**

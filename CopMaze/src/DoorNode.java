@@ -3,7 +3,7 @@ import javafx.scene.image.Image;
 
 /**
  * This class represents a custom JavaFX ImageView for displaying a door image.
- * It extends the JavaFX ImageView class.
+ * It extends the JavaFX ImageView class (view class).
  */
 public class DoorNode extends ImageView {
 	/**
