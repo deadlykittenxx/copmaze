@@ -1,5 +1,3 @@
-
-
 /**
  * This class represents an exit in the maze (model class).
  */

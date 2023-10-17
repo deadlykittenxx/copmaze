@@ -1,7 +1,7 @@
 import javafx.scene.image.ImageView;
 
 /**
- * This class represents a custom JavaFX ImageView for displaying a key image.
+ * This class represents a custom JavaFX ImageView for displaying a key image (view class).
  * It extends the JavaFX ImageView class.
  */
 public class KeyNode extends ImageView {

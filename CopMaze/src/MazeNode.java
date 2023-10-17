@@ -12,7 +12,7 @@ import javafx.scene.input.TransferMode;
 /**
  * A JavaFX Pane representing a visual display of a maze with interactive elements.
  * This class provides a graphical representation of the maze, character, gems, police,
- * key, and door. It also handles user interaction and updates to the maze state.
+ * key, and door. It also handles user interaction and updates to the maze state. (view class)
  */
 public class MazeNode extends Pane {
 	 /**

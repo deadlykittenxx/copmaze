@@ -4,7 +4,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 
 /**
- * This class represents a sound sensor in the maze.
+ * This class provides sound volume detection functionality. 
  */
 
 public class SoundDetector {

@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 
 /**
  * The main class for the Cop Maze game application. This class extends the
- * JavaFX Application class and serves as the entry point for the game.
+ * JavaFX Application class and serves as the entry point for the game (controller class).
  */
 public class CopMaze extends Application {
 	/**
@@ -609,7 +609,7 @@ public class CopMaze extends Application {
 }
 
 /**
- * Represents information about a character available for selection in the game.
+ * Represents information about a character available for selection in the game (model class).
  */
 class CharacterInfo {
 	/**
@@ -636,7 +636,7 @@ class CharacterInfo {
 
 /**
  * Represents information about a game difficulty level, including the number of
- * gems, police, maze size, and other settings.
+ * gems, police, maze size, and other settings (model class).
  */
 class DifficultyLevel {
 	/**

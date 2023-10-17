@@ -1,5 +1,5 @@
 /**
- * The Coordinate class represents a structure for storing integer coordinates.
+ * The Coordinate class represents a structure for storing integer coordinates (model class).
  */
 public class Coordinate {
     /**
